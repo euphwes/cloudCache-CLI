@@ -23,8 +23,27 @@ def ensure_config():
             config_file.write(json.dumps(config, indent=4, separators=(',', ': ')))
 
 
+def ensure_user():
+    """ Make sure the config file has a user setup. If it doesn't, tell the user how to configure
+    this, and then exit the script. """
+
+    with open(CONFIG_FILE, 'r') as config_file:
+        config = json.load(config_file)
+
+    if 'user' in config:
+        return
+
+    # If we get here, there isn't a user configured. Alert the user and tell them how to configure
+    print('\nPlease configure an existing cloudCache user by running the following command:')
+    print('cc config user [username] --> ex: cc config user euphwes')
+    print('\nTo create and configure a new user, run the following command:')
+    print('cc newuser [username] --> ex: cc newuser euphwes')
+    sys.exit(0)
+
+
 # -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
     ensure_config()
+    ensure_user()
