@@ -50,33 +50,42 @@ def ensure_user():
 
 
 def config_app(args):
-    """ Configure the application with whatever value the user provides. """
+    """ Configure the application with either the user, the server, or the port. """
 
     key, val = args[0], args[1]
+
+    if key not in ('user', 'server', 'port', 'api key', 'access token', 'token expires'):
+        print('\nThe configuration option "{}"" is not valid.'.format(key))
+        print('You may only configure "user", "server", or "port".')
+        sys.exit(0)
 
     config = load_config()
     config[key] = val
     save_config(config)
 
-    sys.exit(0)
-
 
 # -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-
     sys.argv.pop(0)  # discard the first argument, which is the script name
+
+    CMD_DICT = dict()
+    CMD_DICT['config'] = config_app
 
     ensure_config()
 
-    CMD_DICT = {'config': config_app}
+    # If no arguments are provided, just echo the current configuration and exit the script
+    if len(sys.argv) == 0:
+        print('\ncloudCache CLI current configuration:')
+        for config_key, config_val in load_config().items():
+            print('\t{}: {}'.format(config_key, config_val))
+        sys.exit(0)
 
-    # If the command is 'config', perform the config
-    # If not, ensure a user exists in config and then run any other command
-    if len(sys.argv) > 0:
-        COMMAND = sys.argv.pop(0)
+    # If the command is 'config', perform the configuration and exit the script
+    COMMAND = sys.argv.pop(0)
+    if COMMAND == 'config':
+        CMD_DICT[COMMAND](sys.argv)
+        sys.exit(0)
 
-        if COMMAND == 'config':
-            CMD_DICT[COMMAND](sys.argv)
-        else:
-            ensure_user()
+    # Before executing any other command, ensure a user is configured
+    ensure_user()
