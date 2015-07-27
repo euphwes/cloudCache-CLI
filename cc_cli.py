@@ -63,6 +63,19 @@ def config_app(args):
     config[key] = val
     save_config(config)
 
+    echo_config()
+
+
+def echo_config():
+    """ Echos the current configuration to the console. Right-justifies all the configuration
+    keys to make it easier to read. """
+
+    config = load_config()
+    max_key_length = max(len(key) for key in config.keys())
+
+    print('\ncloudCache CLI current configuration:\n')
+    for config_key, config_val in config.items():
+        print('\t{}: {}'.format(config_key.rjust(max_key_length), config_val))
 
 # -------------------------------------------------------------------------------------------------
 
@@ -76,9 +89,7 @@ if __name__ == '__main__':
 
     # If no arguments are provided, just echo the current configuration and exit the script
     if len(sys.argv) == 0:
-        print('\ncloudCache CLI current configuration:')
-        for config_key, config_val in load_config().items():
-            print('\t{}: {}'.format(config_key, config_val))
+        echo_config()
         sys.exit(0)
 
     # If the command is 'config', perform the configuration and exit the script
