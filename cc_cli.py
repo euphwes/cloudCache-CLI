@@ -1,6 +1,6 @@
 """ The cloudCache CLI application module. """
 
-import sys, json, requests
+import sys, json, requests, arrow
 from os.path import exists, dirname, realpath, join
 
 # -------------------------------------------------------------------------------------------------
@@ -49,12 +49,39 @@ def ensure_user():
     sys.exit(0)
 
 
+def ensure_access_token():
+    """ Make sure the config file has an access token, which is not expired. If it's expired,
+    delete it and obtain a new one. """
+
+    config = load_config()
+
+    if 'access token' in config():
+        token_time = arrow.get(config['access token'])
+        if token_time > arrow.now():
+            # token exists, and is still valid, so we can return
+            return
+        else:
+            # token exists, but is expired, so delete it
+            del config['access token']
+            save_config(config)
+
+    # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
+    server   = config['server']
+    port     = config['port']
+    username = config['username']
+    api_key  = config['api key']
+    url      = 'http://{}:{}/access/{}/{}'.format(server, port, username, api_key)
+
+    response = requests.get(url)
+    response = json.loads(response.text)
+
+
 def config_app(args):
     """ Configure the application with either the user, the server, or the port. """
 
     key, val = args[0], args[1]
 
-    if key not in ('user', 'server', 'port', 'api key', 'access token', 'token expires'):
+    if key not in ('user', 'server', 'port'):
         print('\nThe configuration option "{}"" is not valid.'.format(key))
         print('You may only configure "user", "server", or "port".')
         sys.exit(0)
@@ -126,5 +153,7 @@ if __name__ == '__main__':
         CMD_DICT[COMMAND](sys.argv)
         sys.exit(0)
 
-    # Before executing any other command, ensure a user is configured
+    # Before executing any other command, ensure a user is configured, and ensure we have a valid
+    # access token so we can be making API calls.
     ensure_user()
+    ensure_access_token()
