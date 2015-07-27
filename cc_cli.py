@@ -20,7 +20,7 @@ def ensure_config():
             config = dict()
             config['server'] = 'localhost'
             config['port'] = '8888'
-            config_file.write(json.dumps(config, indent=4, separators=(',', ': ')))
+            json.dump(config, config_file, indent=4, separators=(',', ': '))
 
 
 def ensure_user():
@@ -41,9 +41,38 @@ def ensure_user():
     sys.exit(0)
 
 
+def config_app(args):
+    """ Configure the application with whatever value the user provides. """
+
+    key, val = args[0], args[1]
+
+    with open(CONFIG_FILE, 'r') as config_file:
+        config = json.load(config_file)
+
+    config[key] = val
+
+    with open(CONFIG_FILE, 'w') as config_file:
+        json.dump(config, config_file, indent=4, separators=(',', ': '))
+
+    sys.exit(0)
+
+
 # -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
+    sys.argv.pop(0)  # discard the first argument, which is the script name
+
     ensure_config()
-    ensure_user()
+
+    CMD_DICT = {'config': config_app}
+
+    # If the command is 'config', perform the config
+    # If not, ensure a user exists in config and then run any other command
+    if len(sys.argv) > 0:
+        COMMAND = sys.argv.pop(0)
+
+        if COMMAND == 'config':
+            CMD_DICT[COMMAND](sys.argv)
+        else:
+            ensure_user()
