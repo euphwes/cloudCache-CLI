@@ -11,6 +11,13 @@ CONFIG_FILE = join(dirname(realpath(__file__)), '.ccconfig')
 
 # -------------------------------------------------------------------------------------------------
 
+def load_config():
+    """ Loads the config from the config file and returns it as a dict. """
+
+    with open(CONFIG_FILE, 'r') as config_file:
+        return json.load(config_file)
+
+
 def ensure_config():
     """ Ensures a config file exists. Write default server location and port. Don't touch anything
     if the config file already exists. """
@@ -27,10 +34,7 @@ def ensure_user():
     """ Make sure the config file has a user setup. If it doesn't, tell the user how to configure
     this, and then exit the script. """
 
-    with open(CONFIG_FILE, 'r') as config_file:
-        config = json.load(config_file)
-
-    if 'user' in config:
+    if 'user' in load_config():
         return
 
     # If we get here, there isn't a user configured. Alert the user and tell them how to configure
@@ -46,8 +50,7 @@ def config_app(args):
 
     key, val = args[0], args[1]
 
-    with open(CONFIG_FILE, 'r') as config_file:
-        config = json.load(config_file)
+    config = load_config()
 
     config[key] = val
 
