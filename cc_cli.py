@@ -80,8 +80,13 @@ def new_user(args):
     url = 'http://{}:{}/users/'.format(config['server'], config['port'])
 
     response = requests.post(url, data=json.dumps(body))
-    resp_dict = json.loads(response.text)
-    pprint(resp_dict)
+    response = json.loads(response.text)
+
+    if response['status'] == 'OK':
+        config['user']    = response['user']['username']
+        config['api key'] = response['user']['api_key']
+        save_config(config)
+        echo_config()
 
 
 def echo_config():
