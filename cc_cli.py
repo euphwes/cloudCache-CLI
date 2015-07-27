@@ -18,16 +18,20 @@ def load_config():
         return json.load(config_file)
 
 
+def save_config(config):
+    """ Save the config info from the supplied dict to the config file as JSON. """
+
+    with open(CONFIG_FILE, 'w') as config_file:
+        json.dump(config, config_file, indent=4, separators=(',', ': '))
+
+
 def ensure_config():
     """ Ensures a config file exists. Write default server location and port. Don't touch anything
     if the config file already exists. """
 
     if not exists(CONFIG_FILE):
-        with open(CONFIG_FILE, 'w') as config_file:
-            config = dict()
-            config['server'] = 'localhost'
-            config['port'] = '8888'
-            json.dump(config, config_file, indent=4, separators=(',', ': '))
+        config = {'server': 'localhost', 'port': '8888'}
+        save_config(config)
 
 
 def ensure_user():
@@ -51,11 +55,8 @@ def config_app(args):
     key, val = args[0], args[1]
 
     config = load_config()
-
     config[key] = val
-
-    with open(CONFIG_FILE, 'w') as config_file:
-        json.dump(config, config_file, indent=4, separators=(',', ': '))
+    save_config(config)
 
     sys.exit(0)
 
