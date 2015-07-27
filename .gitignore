@@ -1,3 +1,7 @@
+# cloudCache app config
+*.ccconfig
+ccconfig
+
 # sqlite databases
 *.db
 
