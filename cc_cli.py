@@ -1,7 +1,8 @@
 """ The cloudCache CLI application module. """
 
-import sys, json
+import sys, json, requests
 from os.path import exists, dirname, realpath, join
+from pprint import pprint
 
 # -------------------------------------------------------------------------------------------------
 
@@ -62,8 +63,25 @@ def config_app(args):
     config = load_config()
     config[key] = val
     save_config(config)
-
     echo_config()
+
+
+def new_user(args):
+    """ Create a new user, and save the relevant details to the config. """
+
+    body = {
+        'username'  : args[0],
+        'first_name': args[1],
+        'last_name' : args[2],
+        'email'     : args[3]
+    }
+
+    config = load_config()
+    url = 'http://{}:{}/users/'.format(config['server'], config['port'])
+
+    response = requests.post(url, data=json.dumps(body))
+    resp_dict = json.loads(response.text)
+    pprint(resp_dict)
 
 
 def echo_config():
@@ -82,8 +100,10 @@ def echo_config():
 if __name__ == '__main__':
     sys.argv.pop(0)  # discard the first argument, which is the script name
 
-    CMD_DICT = dict()
-    CMD_DICT['config'] = config_app
+    CMD_DICT = {
+        'config' : config_app,
+        'newuser': new_user
+    }
 
     ensure_config()
 
@@ -93,8 +113,9 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # If the command is 'config', perform the configuration and exit the script
+    # If the command is 'newuser', create the user via the REST API, save config, and exit
     COMMAND = sys.argv.pop(0)
-    if COMMAND == 'config':
+    if COMMAND in ('config', 'newuser'):
         CMD_DICT[COMMAND](sys.argv)
         sys.exit(0)
 
