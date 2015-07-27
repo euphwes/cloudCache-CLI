@@ -2,7 +2,6 @@
 
 import sys, json, requests
 from os.path import exists, dirname, realpath, join
-from pprint import pprint
 
 # -------------------------------------------------------------------------------------------------
 
@@ -86,7 +85,10 @@ def new_user(args):
         config['user']    = response['user']['username']
         config['api key'] = response['user']['api_key']
         save_config(config)
-        echo_config()
+    else:
+        print('\n** {} **'.format(response['message']))
+
+    echo_config()
 
 
 def echo_config():
