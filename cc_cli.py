@@ -49,6 +49,32 @@ def ensure_user():
     sys.exit(0)
 
 
+def ensure_api_key():
+    """ Make sure we have an API key for the configured user. If we don't, make the appropriate
+    API call to get one. """
+
+    config = load_config()
+
+    if 'api key' in config:
+        return
+
+    # If we get here, we don't have an API key, so let's go get one
+    server   = config['server']
+    port     = config['port']
+    username = config['user']
+    url      = 'http://{}:{}/users/{}'.format(server, port, username)
+
+    response = requests.get(url)
+    response = json.loads(response.text)
+
+    if response['status'] == 'OK':
+        config['api key'] = response['user']['api_key']
+        save_config(config)
+    else:
+        print('\n** {} **'.format(response['message']))
+        sys.exit(0)
+
+
 def ensure_access_token():
     """ Make sure the config file has an access token, which is not expired. If it's expired,
     delete it and obtain a new one. """
@@ -81,6 +107,7 @@ def ensure_access_token():
         save_config(config)
     else:
         print('\n** {} **'.format(response['message']))
+        sys.exit(0)
 
 
 def config_app(args):
@@ -160,7 +187,8 @@ if __name__ == '__main__':
         CMD_DICT[COMMAND](sys.argv)
         sys.exit(0)
 
-    # Before executing any other command, ensure a user is configured, and ensure we have a valid
-    # access token so we can be making API calls.
+    # Before executing any other command, ensure a user is configured, ensure we have a valid
+    # API key, and also an access token so we can be making API calls.
     ensure_user()
+    ensure_api_key()
     ensure_access_token()
