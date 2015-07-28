@@ -24,6 +24,15 @@ RESP_STATUS = 'status'
 
 # -------------------------------------------------------------------------------------------------
 
+def base_url():
+    """ Build and return the base URL for the API endpoints. """
+
+    config = load_config()
+    server = config[CFG_SERVER]
+    port   = config[CFG_PORT]
+    return 'http://{}:{}'.format(server, port)
+
+
 def load_config():
     """ Loads the config from the config file and returns it as a dict. """
 
@@ -72,10 +81,7 @@ def ensure_api_key():
         return
 
     # If we get here, we don't have an API key, so let's go get one
-    server   = config[CFG_SERVER]
-    port     = config[CFG_PORT]
-    username = config[CFG_USER]
-    url      = 'http://{}:{}/users/{}'.format(server, port, username)
+    url = '{}/users/{}'.format(base_url(), config[CFG_USER])
 
     response = requests.get(url)
     response = json.loads(response.text)
@@ -97,7 +103,7 @@ def ensure_access_token():
     if CFG_ACCESS_TOKEN in config and CFG_TOKEN_EXPIRES in config:
         token_time = arrow.get(config[CFG_TOKEN_EXPIRES])
         if token_time > arrow.now():
-            # token exists, and is still valid, so we can return
+            # token exists, and is still valid, so we can use it
             return
         else:
             # token exists, but is expired, so delete it
@@ -106,11 +112,7 @@ def ensure_access_token():
             save_config(config)
 
     # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
-    server   = config[CFG_SERVER]
-    port     = config[CFG_PORT]
-    username = config[CFG_USER]
-    api_key  = config[CFG_API_KEY]
-    url      = 'http://{}:{}/access/{}/{}'.format(server, port, username, api_key)
+    url = '{}/access/{}/{}'.format(base_url(), config[CFG_USER], config[CFG_API_KEY])
 
     response = requests.get(url)
     response = json.loads(response.text)
@@ -131,7 +133,7 @@ def config_app(args):
 
     if key not in (CFG_USER, CFG_SERVER, CFG_PORT):
         print('\nThe configuration option "{}"" is not valid.'.format(key))
-        print('You may only configure "{}", "{}", or "{}".'.format(CFG_USER, CFG_PORT, CGF_SERVER))
+        print('You may only configure "{}", "{}", or "{}".'.format(CFG_USER, CFG_PORT, CFG_SERVER))
         sys.exit(0)
 
     config = load_config()
@@ -152,17 +154,12 @@ def show_users(args):
 
     config = load_config()
 
-    server       = config[CFG_SERVER]
-    port         = config[CFG_PORT]
-    username     = config[CFG_USER]
-    access_token = config[CFG_ACCESS_TOKEN]
-
     headers = {
-        'username'    : username,
-        'access token': access_token
+        'username'    : config[CFG_USER],
+        'access token': config[CFG_ACCESS_TOKEN]
     }
 
-    url = 'http://{}:{}/users'.format(server, port)
+    url = '{}/users'.format(base_url())
 
     response = requests.get(url, headers=headers)
     response = json.loads(response.text)
@@ -185,12 +182,12 @@ def new_user(args):
         'email'     : args[3]
     }
 
-    config = load_config()
-    url = 'http://{}:{}/users/'.format(config[CFG_SERVER], config[CFG_PORT])
+    url = '{}/users/'.format(base_url())
 
     response = requests.post(url, data=json.dumps(body))
     response = json.loads(response.text)
 
+    config = load_config()
     if response[RESP_STATUS] == RESP_OK:
         config[CFG_USER]    = response['user']['username']
         config[CFG_API_KEY] = response['user']['api_key']
