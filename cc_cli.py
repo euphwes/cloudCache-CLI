@@ -122,6 +122,13 @@ def config_app(args):
 
     config = load_config()
     config[key] = val
+
+    # If we're changing the user, delete any access token and api key since those will be invalid
+    if key == 'user':
+        for del_key in ('api key', 'access token', 'token expires'):
+            if del_key in config:
+                del config[del_key]
+
     save_config(config)
     echo_config()
 
