@@ -11,6 +11,15 @@ CONFIG_FILE = join(dirname(realpath(__file__)), '.ccconfig')
 
 # -------------------------------------------------------------------------------------------------
 
+CFG_SERVER        = 'server'
+CFG_PORT          = 'port'
+CFG_USER          = 'user'
+CFG_API_KEY       = 'api key'
+CFG_ACCESS_TOKEN  = 'access token'
+CFG_TOKEN_EXPIRES = 'token expires'
+
+# -------------------------------------------------------------------------------------------------
+
 def load_config():
     """ Loads the config from the config file and returns it as a dict. """
 
@@ -30,7 +39,7 @@ def ensure_config():
     if the config file already exists. """
 
     if not exists(CONFIG_FILE):
-        config = {'server': 'localhost', 'port': '8888'}
+        config = {CFG_SERVER: 'localhost', CFG_PORT: '8888'}
         save_config(config)
 
 
@@ -38,7 +47,7 @@ def ensure_user():
     """ Make sure the config file has a user setup. If it doesn't, tell the user how to configure
     this, and then exit the script. """
 
-    if 'user' in load_config():
+    if CFG_USER in load_config():
         return
 
     # If we get here, there isn't a user configured. Alert the user and tell them how to configure
@@ -55,20 +64,20 @@ def ensure_api_key():
 
     config = load_config()
 
-    if 'api key' in config:
+    if CFG_API_KEY in config:
         return
 
     # If we get here, we don't have an API key, so let's go get one
-    server   = config['server']
-    port     = config['port']
-    username = config['user']
+    server   = config[CFG_SERVER]
+    port     = config[CFG_PORT]
+    username = config[CFG_USER]
     url      = 'http://{}:{}/users/{}'.format(server, port, username)
 
     response = requests.get(url)
     response = json.loads(response.text)
 
     if response['status'] == 'OK':
-        config['api key'] = response['user']['api_key']
+        config[CFG_API_KEY] = response['user']['api_key']
         save_config(config)
     else:
         print('\n** {} **'.format(response['message']))
@@ -81,30 +90,30 @@ def ensure_access_token():
 
     config = load_config()
 
-    if 'access token' in config and 'token expires' in config:
-        token_time = arrow.get(config['token expires'])
+    if CFG_ACCESS_TOKEN in config and CFG_TOKEN_EXPIRES in config:
+        token_time = arrow.get(config[CFG_TOKEN_EXPIRES])
         if token_time > arrow.now():
             # token exists, and is still valid, so we can return
             return
         else:
             # token exists, but is expired, so delete it
-            del config['access token']
-            del config['token expires']
+            del config[CFG_ACCESS_TOKEN]
+            del config[CFG_TOKEN_EXPIRES]
             save_config(config)
 
     # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
-    server   = config['server']
-    port     = config['port']
-    username = config['user']
-    api_key  = config['api key']
+    server   = config[CFG_SERVER]
+    port     = config[CFG_PORT]
+    username = config[CFG_USER]
+    api_key  = config[CFG_API_KEY]
     url      = 'http://{}:{}/access/{}/{}'.format(server, port, username, api_key)
 
     response = requests.get(url)
     response = json.loads(response.text)
 
     if response['status'] == 'OK':
-        config['access token'] = response['access token']['access_token']
-        config['token expires'] = response['access token']['expires_on']
+        config[CFG_ACCESS_TOKEN] = response['access token']['access_token']
+        config[CFG_TOKEN_EXPIRES] = response['access token']['expires_on']
         save_config(config)
     else:
         print('\n** {} **'.format(response['message']))
@@ -116,7 +125,7 @@ def config_app(args):
 
     key, val = args[0], args[1]
 
-    if key not in ('user', 'server', 'port'):
+    if key not in (CFG_USER, CFG_SERVER, CFG_PORT):
         print('\nThe configuration option "{}"" is not valid.'.format(key))
         print('You may only configure "user", "server", or "port".')
         sys.exit(0)
@@ -125,8 +134,8 @@ def config_app(args):
     config[key] = val
 
     # If we're changing the user, delete any access token and api key since those will be invalid
-    if key == 'user':
-        for del_key in ('api key', 'access token', 'token expires'):
+    if key == CFG_USER:
+        for del_key in (CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES):
             if del_key in config:
                 del config[del_key]
 
@@ -139,10 +148,10 @@ def show_users(args):
 
     config = load_config()
 
-    server       = config['server']
-    port         = config['port']
-    username     = config['user']
-    access_token = config['access token']
+    server       = config[CFG_SERVER]
+    port         = config[CFG_PORT]
+    username     = config[CFG_USER]
+    access_token = config[CFG_ACCESS_TOKEN]
 
     headers = {
         'username'    : username,
@@ -173,14 +182,14 @@ def new_user(args):
     }
 
     config = load_config()
-    url = 'http://{}:{}/users/'.format(config['server'], config['port'])
+    url = 'http://{}:{}/users/'.format(config[CFG_SERVER], config[CFG_PORT])
 
     response = requests.post(url, data=json.dumps(body))
     response = json.loads(response.text)
 
     if response['status'] == 'OK':
-        config['user']    = response['user']['username']
-        config['api key'] = response['user']['api_key']
+        config[CFG_USER]    = response['user']['username']
+        config[CFG_API_KEY] = response['user']['api_key']
         save_config(config)
     else:
         print('\n** {} **'.format(response['message']))
