@@ -189,6 +189,7 @@ def new_user(args):
 
     config = load_config()
     if response[RESP_STATUS] == RESP_OK:
+        del config[CFG_ACCESS_TOKEN]
         config[CFG_USER]    = response['user']['username']
         config[CFG_API_KEY] = response['user']['api_key']
         save_config(config)
