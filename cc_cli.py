@@ -206,7 +206,8 @@ def echo_config():
     max_key_length = max(len(key) for key in config.keys())
 
     print('\ncloudCache CLI current configuration:\n')
-    for config_key, config_val in config.items():
+    for config_key in sorted(config.keys()):
+        config_val = config[config_key]
         print('\t{}: {}'.format(config_key.rjust(max_key_length), config_val))
 
 # -------------------------------------------------------------------------------------------------
