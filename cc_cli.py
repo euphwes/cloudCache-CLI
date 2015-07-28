@@ -55,8 +55,8 @@ def ensure_access_token():
 
     config = load_config()
 
-    if 'access token' in config():
-        token_time = arrow.get(config['access token'])
+    if 'access token' in config and 'token expires' in config:
+        token_time = arrow.get(config['token expires'])
         if token_time > arrow.now():
             # token exists, and is still valid, so we can return
             return
@@ -68,12 +68,19 @@ def ensure_access_token():
     # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
     server   = config['server']
     port     = config['port']
-    username = config['username']
+    username = config['user']
     api_key  = config['api key']
     url      = 'http://{}:{}/access/{}/{}'.format(server, port, username, api_key)
 
     response = requests.get(url)
     response = json.loads(response.text)
+
+    if response['status'] == 'OK':
+        config['access token'] = response['access token']['access_token']
+        config['token expires'] = response['access token']['expires_on']
+        save_config(config)
+    else:
+        print('\n** {} **'.format(response['message']))
 
 
 def config_app(args):
