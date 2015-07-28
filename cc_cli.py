@@ -89,6 +89,7 @@ def ensure_access_token():
         else:
             # token exists, but is expired, so delete it
             del config['access token']
+            del config['token expires']
             save_config(config)
 
     # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
@@ -131,6 +132,34 @@ def config_app(args):
 
     save_config(config)
     echo_config()
+
+
+def show_users(args):
+    """ Show all users. """
+
+    config = load_config()
+
+    server       = config['server']
+    port         = config['port']
+    username     = config['user']
+    access_token = config['access token']
+
+    headers = {
+        'username'    : username,
+        'access token': access_token
+    }
+
+    url = 'http://{}:{}/users'.format(server, port)
+
+    response = requests.get(url, headers=headers)
+    response = json.loads(response.text)
+
+    if response['status'] == 'OK':
+        print('')
+        for user in response['users']:
+            print('\t{}'.format(user['username']))
+    else:
+        print('\n** {} **'.format(response['message']))
 
 
 def new_user(args):
@@ -177,7 +206,8 @@ if __name__ == '__main__':
 
     CMD_DICT = {
         'config' : config_app,
-        'newuser': new_user
+        'newuser': new_user,
+        'users'  : show_users
     }
 
     ensure_config()
@@ -199,3 +229,5 @@ if __name__ == '__main__':
     ensure_user()
     ensure_api_key()
     ensure_access_token()
+
+    CMD_DICT[COMMAND](sys.argv)
