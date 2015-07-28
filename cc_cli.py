@@ -18,6 +18,10 @@ CFG_API_KEY       = 'api key'
 CFG_ACCESS_TOKEN  = 'access token'
 CFG_TOKEN_EXPIRES = 'token expires'
 
+RESP_OK     = 'OK'
+RESP_ERR    = 'Error'
+RESP_STATUS = 'status'
+
 # -------------------------------------------------------------------------------------------------
 
 def load_config():
@@ -76,7 +80,7 @@ def ensure_api_key():
     response = requests.get(url)
     response = json.loads(response.text)
 
-    if response['status'] == 'OK':
+    if response[RESP_STATUS] == RESP_OK:
         config[CFG_API_KEY] = response['user']['api_key']
         save_config(config)
     else:
@@ -111,8 +115,8 @@ def ensure_access_token():
     response = requests.get(url)
     response = json.loads(response.text)
 
-    if response['status'] == 'OK':
-        config[CFG_ACCESS_TOKEN] = response['access token']['access_token']
+    if response[RESP_STATUS] == RESP_OK:
+        config[CFG_ACCESS_TOKEN]  = response['access token']['access_token']
         config[CFG_TOKEN_EXPIRES] = response['access token']['expires_on']
         save_config(config)
     else:
@@ -127,7 +131,7 @@ def config_app(args):
 
     if key not in (CFG_USER, CFG_SERVER, CFG_PORT):
         print('\nThe configuration option "{}"" is not valid.'.format(key))
-        print('You may only configure "user", "server", or "port".')
+        print('You may only configure "{}", "{}", or "{}".'.format(CFG_USER, CFG_PORT, CGF_SERVER))
         sys.exit(0)
 
     config = load_config()
@@ -163,7 +167,7 @@ def show_users(args):
     response = requests.get(url, headers=headers)
     response = json.loads(response.text)
 
-    if response['status'] == 'OK':
+    if response[RESP_STATUS] == RESP_OK:
         print('')
         for user in response['users']:
             print('\t{}'.format(user['username']))
@@ -187,7 +191,7 @@ def new_user(args):
     response = requests.post(url, data=json.dumps(body))
     response = json.loads(response.text)
 
-    if response['status'] == 'OK':
+    if response[RESP_STATUS] == RESP_OK:
         config[CFG_USER]    = response['user']['username']
         config[CFG_API_KEY] = response['user']['api_key']
         save_config(config)
