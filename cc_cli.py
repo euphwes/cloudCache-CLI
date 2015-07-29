@@ -156,7 +156,6 @@ def show_users(args):
     config = load_config()
 
     headers = {
-        'username'    : config[CFG_USER],
         'access token': config[CFG_ACCESS_TOKEN]
     }
 
@@ -179,7 +178,6 @@ def new_notebook(args):
     config = load_config()
 
     headers = {
-        'username'    : config[CFG_USER],
         'access token': config[CFG_ACCESS_TOKEN]
     }
 
