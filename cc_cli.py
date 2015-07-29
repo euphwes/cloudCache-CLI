@@ -107,8 +107,9 @@ def ensure_access_token():
             return
         else:
             # token exists, but is expired, so delete it
-            del config[CFG_ACCESS_TOKEN]
-            del config[CFG_TOKEN_EXPIRES]
+            for key in (CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES):
+                if key in config:
+                    del config[key]
             save_config(config)
 
     # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
