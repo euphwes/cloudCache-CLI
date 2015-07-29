@@ -172,6 +172,27 @@ def show_users(args):
         print('\n** {} **'.format(response['message']))
 
 
+def new_notebook(args):
+    """ Create a new notebook. """
+
+    config = load_config()
+
+    headers = {
+        'username'    : config[CFG_USER],
+        'access token': config[CFG_ACCESS_TOKEN]
+    }
+
+    body = {'notebook_name': args[0]}
+
+    url = '{}/users/{}/notebooks'.format(base_url(), config[CFG_USER])
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+    response = json.loads(response.text)
+
+    if response[RESP_STATUS] == RESP_ERR:
+        print('\n** {} **'.format(response['message']))
+
+
 def new_user(args):
     """ Create a new user, and save the relevant details to the config. """
 
@@ -217,9 +238,10 @@ if __name__ == '__main__':
     sys.argv.pop(0)  # discard the first argument, which is the script name
 
     CMD_DICT = {
-        'config' : config_app,
-        'newuser': new_user,
-        'users'  : show_users
+        'config'     : config_app,
+        'newuser'    : new_user,
+        'users'      : show_users,
+        'newnotebook': new_notebook,
     }
 
     ensure_config()
