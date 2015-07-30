@@ -18,10 +18,6 @@ CFG_API_KEY       = 'api key'
 CFG_ACCESS_TOKEN  = 'access token'
 CFG_TOKEN_EXPIRES = 'token expires'
 
-RESP_OK     = 'OK'
-RESP_ERR    = 'Error'
-RESP_STATUS = 'status'
-
 # -------------------------------------------------------------------------------------------------
 
 def base_url():
@@ -196,13 +192,12 @@ def new_notebook(args):
     headers = {'access token': config[CFG_ACCESS_TOKEN]}
     body    = {'notebook_name': args[0]}
 
-    url = '{}/users/{}/notebooks'.format(base_url(), config[CFG_USER])
+    url = '{}/notebooks'.format(base_url())
 
     response = requests.post(url, headers=headers, data=json.dumps(body))
-    response = json.loads(response.text)
 
-    if response[RESP_STATUS] == RESP_ERR:
-        print('\n** {} **'.format(response['message']))
+    if response.status_code != 200:
+        print('\n** {} **'.format(json.loads(response.text)['message']))
 
 
 def new_user(args):
