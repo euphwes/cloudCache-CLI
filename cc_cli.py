@@ -147,7 +147,6 @@ def config_app(args):
                 del config[del_key]
 
     save_config(config)
-    echo_config()
 
 
 def show_users(args):
@@ -210,8 +209,6 @@ def new_user(args):
         save_config(config)
     else:
         print('\n** {} **'.format(response['message']))
-
-    echo_config()
 
 
 def echo_config():
