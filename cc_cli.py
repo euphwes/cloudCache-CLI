@@ -238,24 +238,19 @@ if __name__ == '__main__':
         'newnotebook': new_notebook,
     }
 
+    # Before executing any command, ensure a user is configured, ensure we have a valid API key,
+    # and also an access token so we can be making API calls.
     ensure_config()
-
-    # If no arguments are provided, just echo the current configuration and exit the script
-    if len(sys.argv) == 0:
-        echo_config()
-        sys.exit(0)
-
-    # If the command is 'config', perform the configuration and exit the script
-    # If the command is 'newuser', create the user via the REST API, save config, and exit
-    COMMAND = sys.argv.pop(0)
-    if COMMAND in ('config', 'newuser'):
-        CMD_DICT[COMMAND](sys.argv)
-        sys.exit(0)
-
-    # Before executing any other command, ensure a user is configured, ensure we have a valid
-    # API key, and also an access token so we can be making API calls.
     ensure_user()
     ensure_api_key()
     ensure_access_token()
 
+    # If no arguments are provided, just echo the current configuration and exit the script
+    if not sys.argv:
+        echo_config()
+        sys.exit(0)
+
+    # Pop the first item in the argument stack to get the command, and then pass the remaining
+    # arguments to that command to execute it
+    COMMAND = sys.argv.pop(0)
     CMD_DICT[COMMAND](sys.argv)
