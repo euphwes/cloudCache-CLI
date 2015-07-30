@@ -175,18 +175,17 @@ def show_notebooks(args):
     config = load_config()
 
     url = '{}/notebooks'.format(base_url())
-
     headers = {'access token': config[CFG_ACCESS_TOKEN]}
 
     response = requests.get(url, headers=headers)
-    response = json.loads(response.text)
+    results = json.loads(response.text)
 
-    if response[RESP_STATUS] == RESP_OK:
-        print('\nYour notebooks:')
-        for notebook in response['notebooks']:
-            print('\t{}'.format(notebook['name']))
+    if response.status_code == 200:
+        print('\nYour notebooks:\n')
+        for notebook in results['notebooks']:
+            print('\t{}'.format(notebook))
     else:
-        print('\n** {} **'.format(response['message']))
+        print('\n** {} **'.format(results['message']))
 
 
 def new_notebook(args):
