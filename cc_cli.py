@@ -161,7 +161,7 @@ def show_users(args):
     if response.status_code == 200:
         print('')
         for user in results['users']:
-            print('\t{}'.format(user['username']))
+            print('\t{}'.format(user))
     else:
         print('\n** {} **'.format(results['message']))
 
