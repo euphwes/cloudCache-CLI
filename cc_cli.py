@@ -218,7 +218,8 @@ def new_user(args):
 
     if response.status_code == 200:
         config = load_config()
-        del config[CFG_ACCESS_TOKEN]
+        if CFG_ACCESS_TOKEN in config:
+            del config[CFG_ACCESS_TOKEN]
         config[CFG_USER]    = args[0]
         config[CFG_API_KEY] = results['api_key']
         save_config(config)
