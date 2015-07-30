@@ -169,6 +169,26 @@ def show_users(args):
         print('\n** {} **'.format(response['message']))
 
 
+def show_notebooks(args):
+    """ Show all notebooks for this user. """
+
+    config = load_config()
+
+    url = '{}/users/{}/notebooks'.format(base_url(), config[CFG_USER])
+
+    headers = {'access token': config[CFG_ACCESS_TOKEN]}
+
+    response = requests.get(url, headers=headers)
+    response = json.loads(response.text)
+
+    if response[RESP_STATUS] == RESP_OK:
+        print('\nYour notebooks:')
+        for notebook in response['notebooks']:
+            print('\t{}'.format(notebook['name']))
+    else:
+        print('\n** {} **'.format(response['message']))
+
+
 def new_notebook(args):
     """ Create a new notebook. """
 
@@ -233,6 +253,7 @@ if __name__ == '__main__':
         'newuser'    : new_user,
         'users'      : show_users,
         'newnotebook': new_notebook,
+        'notebooks'  : show_notebooks
     }
 
     ensure_config()
