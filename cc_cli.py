@@ -155,11 +155,9 @@ def show_users(args):
 
     config = load_config()
 
-    headers = {
-        'access token': config[CFG_ACCESS_TOKEN]
-    }
-
     url = '{}/users'.format(base_url())
+
+    headers = {'access token': config[CFG_ACCESS_TOKEN]}
 
     response = requests.get(url, headers=headers)
     response = json.loads(response.text)
@@ -177,11 +175,8 @@ def new_notebook(args):
 
     config = load_config()
 
-    headers = {
-        'access token': config[CFG_ACCESS_TOKEN]
-    }
-
-    body = {'notebook_name': args[0]}
+    headers = {'access token': config[CFG_ACCESS_TOKEN]}
+    body    = {'notebook_name': args[0]}
 
     url = '{}/users/{}/notebooks'.format(base_url(), config[CFG_USER])
 
