@@ -174,7 +174,7 @@ def show_notebooks(args):
 
     config = load_config()
 
-    url = '{}/users/{}/notebooks'.format(base_url(), config[CFG_USER])
+    url = '{}/notebooks'.format(base_url())
 
     headers = {'access token': config[CFG_ACCESS_TOKEN]}
 
