@@ -80,13 +80,13 @@ def ensure_api_key():
     url = '{}/users/{}'.format(base_url(), config[CFG_USER])
 
     response = requests.get(url)
-    response = json.loads(response.text)
+    results  = json.loads(response.text)
 
-    if response[RESP_STATUS] == RESP_OK:
-        config[CFG_API_KEY] = response['user']['api_key']
+    if response.status_code == 200:
+        config[CFG_API_KEY] = results['user']['api_key']
         save_config(config)
     else:
-        print('\n** {} **'.format(response['message']))
+        print('\n** {} **'.format(results['message']))
         sys.exit(0)
 
 
@@ -112,12 +112,13 @@ def ensure_access_token():
     url = '{}/access/{}/{}'.format(base_url(), config[CFG_USER], config[CFG_API_KEY])
 
     response = requests.get(url)
-    response = json.loads(response.text)
+    results  = json.loads(response.text)
 
-    if response[RESP_STATUS] == RESP_OK:
-        config[CFG_ACCESS_TOKEN]  = response['access token']['access_token']
-        config[CFG_TOKEN_EXPIRES] = response['access token']['expires_on']
+    if response.status_code == 200:
+        config[CFG_ACCESS_TOKEN]  = results['access token']['access_token']
+        config[CFG_TOKEN_EXPIRES] = results['access token']['expires_on']
         save_config(config)
+
     else:
         print('\n** {} **'.format(response['message']))
         sys.exit(0)
@@ -155,14 +156,14 @@ def show_users(args):
     headers = {'access token': config[CFG_ACCESS_TOKEN]}
 
     response = requests.get(url, headers=headers)
-    response = json.loads(response.text)
+    results  = json.loads(response.text)
 
-    if response[RESP_STATUS] == RESP_OK:
+    if response.status_code == 200:
         print('')
-        for user in response['users']:
+        for user in results['users']:
             print('\t{}'.format(user['username']))
     else:
-        print('\n** {} **'.format(response['message']))
+        print('\n** {} **'.format(results['message']))
 
 
 def show_notebooks(args):
@@ -213,16 +214,17 @@ def new_user(args):
     url = '{}/users/'.format(base_url())
 
     response = requests.post(url, data=json.dumps(body))
-    response = json.loads(response.text)
+    results  = json.loads(response.text)
 
-    config = load_config()
-    if response[RESP_STATUS] == RESP_OK:
+    if response.status_code == 200:
+        config = load_config()
         del config[CFG_ACCESS_TOKEN]
-        config[CFG_USER]    = response['user']['username']
-        config[CFG_API_KEY] = response['user']['api_key']
+        config[CFG_USER]    = args[0]
+        config[CFG_API_KEY] = results['api_key']
         save_config(config)
+
     else:
-        print('\n** {} **'.format(response['message']))
+        print('\n** {} **'.format(results['message']))
 
 
 def echo_config():
