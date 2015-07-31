@@ -226,7 +226,7 @@ def show_notes(args):
         if len(results['notes']) == 0:
             print('\n' + get_table([['This notebook does not have any notes yet.']], indent=2))
         else:
-            print('\n' + get_table([[args[0]]], indent=2))
+            print('\n' + get_table([[results['notebook']]], indent=2))
             data    = [[note['key'], note['value']] for note in results['notes']]
             headers = ['Note name', 'Note contents']
             print(get_table(data, headers=headers, indent=6))
