@@ -200,8 +200,9 @@ def show_notebooks(args):
     results = json.loads(response.text)
 
     if response.status_code == 200:
-        data = [[notebook] for notebook in results['notebooks']]
-        print('\n' + get_table(data, indent=2))
+        headers = ['ID', 'Notebook Name']
+        data = [[nb['id'], nb['name']] for nb in results['notebooks']]
+        print('\n' + get_table(data, headers=headers, indent=2))
     else:
         print('\n** {} **'.format(results['message']))
 
