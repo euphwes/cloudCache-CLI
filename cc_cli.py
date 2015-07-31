@@ -29,6 +29,29 @@ def base_url():
     return 'http://{}:{}'.format(server, port)
 
 
+def get_table(data, headers=None, indent=0, table_format='fancy_grid'):
+    """ Get an ascii table string for a given set of values (list of lists), and column headers.
+    Optional indentation. Defer to tabulate.tabulate for most of the work. This is mostly a
+    convenience function for indenting a table.
+
+    Args:
+        data: Any data which can be fed to tabulate, nominally list of lists.
+        headers (list of string): A list of values to be used as column headers
+        indent (int): The number of spaces to indent table by. Defaults to 0 (no indentation).
+        table_format (string): The tablefmt argument of tabulate.tabulate. Defaults to fancy_grid.
+
+    Returns:
+        string: The formatted table of data
+    """
+
+    from tabulate import tabulate
+
+    table  = tabulate(data, headers=headers, tablefmt=table_format)
+    indent = ' ' * indent
+
+    return '\n'.join(indent + line for line in table.split('\n'))
+
+
 def load_config():
     """ Loads the config from the config file and returns it as a dict. """
 
@@ -233,12 +256,11 @@ def echo_config():
     keys to make it easier to read. """
 
     config = load_config()
-    max_key_length = max(len(key) for key in config.keys())
 
-    print('\ncloudCache CLI current configuration:\n')
-    for config_key in sorted(config.keys()):
-        config_val = config[config_key]
-        print('\t{}: {}'.format(config_key.rjust(max_key_length), config_val))
+    headers = ['Configuration option', 'Value']
+    data  = [[key, config[key]] for key in sorted(config.keys())]
+
+    print('\n' + get_table(data, headers=headers, indent=2))
 
 # -------------------------------------------------------------------------------------------------
 
