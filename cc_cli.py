@@ -222,6 +222,27 @@ def new_notebook(args):
         print('\n** {} **'.format(json.loads(response.text)['message']))
 
 
+def new_note(args):
+    """ Create a new note. """
+
+    config = load_config()
+
+    headers = {'access token': config[CFG_ACCESS_TOKEN]}
+    body    = {
+        'note_key'     : args[1],
+        'note_value'   : args[2]
+    }
+
+    notebook = args[0]
+
+    url = '{}/notebooks/{}/notes'.format(base_url(), notebook)
+
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+
+    if response.status_code != 200:
+        print('\n** {} **'.format(json.loads(response.text)['message']))
+
+
 def new_user(args):
     """ Create a new user, and save the relevant details to the config. """
 
@@ -270,7 +291,8 @@ if __name__ == '__main__':
         'newuser'    : new_user,
         'users'      : show_users,
         'newnotebook': new_notebook,
-        'notebooks'  : show_notebooks
+        'notebooks'  : show_notebooks,
+        'newnote'    : new_note
     }
 
     ensure_config()
