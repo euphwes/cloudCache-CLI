@@ -182,8 +182,9 @@ def show_users(args):
     results  = json.loads(response.text)
 
     if response.status_code == 200:
-        data = [[user] for user in results['users']]
-        print('\n' + get_table(data, indent=2))
+        headers = ['ID', 'Username']
+        data = [[user['id'], user['username']] for user in results['users']]
+        print('\n' + get_table(data, headers=headers, indent=2))
     else:
         print('\n** {} **'.format(results['message']))
 
