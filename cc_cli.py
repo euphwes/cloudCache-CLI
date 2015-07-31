@@ -201,9 +201,12 @@ def show_notebooks(args):
     results = json.loads(response.text)
 
     if response.status_code == 200:
-        headers = ['ID', 'Notebook Name']
-        data = [[nb['id'], nb['name']] for nb in results['notebooks']]
-        print('\n' + get_table(data, headers=headers, indent=2))
+        if len(results['notebooks']) == 0:
+            print('\n' + get_table([['No notebooks exist for this user']], indent=2))
+        else:
+            headers = ['ID', 'Notebook Name']
+            data = [[nb['id'], nb['name']] for nb in results['notebooks']]
+            print('\n' + get_table(data, headers=headers, indent=2))
     else:
         print('\n** {} **'.format(results['message']))
 
