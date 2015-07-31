@@ -223,9 +223,13 @@ def show_notes(args):
     results = json.loads(response.text)
 
     if response.status_code == 200:
-        data    = [[note['key'], note['value']] for note in results['notes']]
-        headers = ['Note name', 'Note contents']
-        print('\n' + get_table(data, headers=headers, indent=2))
+        if len(results['notes']) == 0:
+            print('\n' + get_table([['This notebook does not have any notes yet.']], indent=2))
+        else:
+            print('\n' + get_table([[args[0]]], indent=2))
+            data    = [[note['key'], note['value']] for note in results['notes']]
+            headers = ['Note name', 'Note contents']
+            print(get_table(data, headers=headers, indent=6))
     else:
         print('\n** {} **'.format(results['message']))
 
