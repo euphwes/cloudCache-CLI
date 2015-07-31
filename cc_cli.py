@@ -29,7 +29,7 @@ def base_url():
     return 'http://{}:{}'.format(server, port)
 
 
-def get_table(data, headers=None, indent=0, table_format='fancy_grid'):
+def get_table(data, headers=[], indent=0, table_format='fancy_grid'):
     """ Get an ascii table string for a given set of values (list of lists), and column headers.
     Optional indentation. Defer to tabulate.tabulate for most of the work. This is mostly a
     convenience function for indenting a table.
@@ -182,9 +182,8 @@ def show_users(args):
     results  = json.loads(response.text)
 
     if response.status_code == 200:
-        print('')
-        for user in results['users']:
-            print('\t{}'.format(user))
+        data = [[user] for user in results['users']]
+        print('\n' + get_table(data, indent=2))
     else:
         print('\n** {} **'.format(results['message']))
 
