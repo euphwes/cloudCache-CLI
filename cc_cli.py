@@ -331,17 +331,22 @@ if __name__ == '__main__':
         echo_config()
         sys.exit(0)
 
-    # If the command is 'config', perform the configuration and exit the script
-    # If the command is 'newuser', create the user via the REST API, save config, and exit
-    COMMAND = sys.argv.pop(0)
-    if COMMAND in ('config', 'newuser'):
+    try:
+        # If the command is 'config', perform the configuration and exit the script
+        # If the command is 'newuser', create the user via the REST API, save config, and exit
+        COMMAND = sys.argv.pop(0)
+        if COMMAND in ('config', 'newuser'):
+            CMD_DICT[COMMAND](sys.argv)
+            sys.exit(0)
+
+        # Before executing any other command, ensure a user is configured, ensure we have a valid
+        # API key, and also an access token so we can be making API calls.
+        ensure_user()
+        ensure_api_key()
+        ensure_access_token()
+
         CMD_DICT[COMMAND](sys.argv)
-        sys.exit(0)
 
-    # Before executing any other command, ensure a user is configured, ensure we have a valid
-    # API key, and also an access token so we can be making API calls.
-    ensure_user()
-    ensure_api_key()
-    ensure_access_token()
-
-    CMD_DICT[COMMAND](sys.argv)
+    except requests.exceptions.ConnectionError:
+        print('\nUnable to connect to the cloudCache server.')
+        print('Ensure your server host and port configuration is correct, and that the server is running.')
