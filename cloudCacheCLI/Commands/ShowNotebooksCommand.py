@@ -1,44 +1,33 @@
 """ Show the user notebooks. """
 
-import json
 import sys
 
-import requests
-
-from cloudCacheCLI.Commands import BaseCommand
+from . import CommandValidationError, BaseCommand
 from cloudCacheCLI.Utilities import get_table
 
-# -------------------------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------------------------------
 
 class ShowNotebooksCommand(BaseCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNotebooksCommand, self).__init__(args, parent_app)
         self.url = '{}/notebooks'.format(self.base_url)
+        self.action()
 
 
-    def _validate_args(self):
-        """ Make sure the passed arguments are relevant to this command, and are also
-        acceptably formatted. """
-
+    def _validate_and_parse_args(self):
+        """ Since the 'notebooks' command is argument-free, make sure no arguments were passed in. """
         if len(self.args) > 0:
-            print('\nThe notebooks command takes no parameters.')
-            sys.exit(0)
+            raise CommandValidationError('The `notebooks` command takes no parameters.')
 
 
-    def action(self):
-        """ Show all notebooks for this user. """
+    def _on_action_success(self):
+        """ Prints the list of the current user's notebooks to the console in a formatted table. """
 
-        response = requests.get(self.url, headers=self.headers)
-        results  = json.loads(response.text)
-
-        if response:
-            if len(results['notebooks']) == 0:
-                print('\n' + get_table([['No notebooks exist for this user']], indent=2))
-            else:
-                headers = ['ID', 'Notebook Name']
-                data = [[nb['id'], nb['name']] for nb in results['notebooks']]
-                print('\n' + get_table(data, headers=headers, indent=2))
+        if len(self.results['notebooks']) == 0:
+            print('\n' + get_table([['No notebooks exist for this user']], indent=2))
 
         else:
-            print('\n** {} **'.format(results['message']))
+            table_headers = ['ID', 'Notebook Name']
+            data = [[nb['id'], nb['name']] for nb in self.results['notebooks']]
+            print('\n' + get_table(data, headers=table_headers, indent=2))

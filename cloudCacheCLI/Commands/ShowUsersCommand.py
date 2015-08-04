@@ -14,8 +14,7 @@ class ShowUsersCommand(BaseCommand):
 
 
     def _validate_and_parse_args(self):
-        """ As the 'users' command is argument-free, make sure no arguments were passed in. """
-
+        """ Since the 'users' command is argument-free, make sure no arguments were passed in. """
         if len(self.args) > 0:
             raise CommandValidationError('The `users` command takes no parameters.')
 
