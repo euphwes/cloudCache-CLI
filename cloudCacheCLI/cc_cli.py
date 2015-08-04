@@ -4,7 +4,7 @@ import sys, json, requests, arrow, tabulate
 from os.path import exists, dirname, realpath, join
 
 from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
-from Commands import ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand
+from Commands import ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -40,12 +40,12 @@ class CloudCacheCliApp(object):
         self.commands = {
             'config'   : ConfigAppCommand,
             'users'    : ShowUsersCommand,
-            'notebooks': ShowNotebooksCommand
+            'notebooks': ShowNotebooksCommand,
+            'newuser'  : NewUserCommand
         }
 
         """
         CMD_DICT = {
-            'newuser'    : new_user,
             'newnotebook': new_notebook,
             'notebooks'  : show_notebooks,
             'newnote'    : new_note,
@@ -247,33 +247,6 @@ class CloudCacheCliApp(object):
 
         if response.status_code != 200:
             print('\n** {} **'.format(json.loads(response.text)['message']))
-
-
-    def new_user(args):
-        """ Create a new user, and save the relevant details to the config. """
-
-        body = {
-            'username'  : args[0],
-            'first_name': args[1],
-            'last_name' : args[2],
-            'email'     : args[3]
-        }
-
-        url = '{}/users/'.format(base_url())
-
-        response = requests.post(url, data=json.dumps(body))
-        results  = json.loads(response.text)
-
-        if response.status_code == 200:
-            config = load_config()
-            if CFG_ACCESS_TOKEN in config:
-                del config[CFG_ACCESS_TOKEN]
-            config[CFG_USER]    = args[0]
-            config[CFG_API_KEY] = results['api_key']
-            save_config(config)
-
-        else:
-            print('\n** {} **'.format(results['message']))
 
 
     def action(self):
