@@ -27,7 +27,7 @@ class CloudCacheCliApp(object):
         self._build_commands()
         self.command = self.commands[self.args.pop(0)]
 
-        if type(self.command) not in [ConfigAppCommand, NewUserCommand]:
+        if not (self.command is ConfigAppCommand or self.command is NewUserCommand):
             # Before executing any command other than config or newuser, ensure a user is configured, ensure we have a
             # valid API key, and also an access token so we can be making API calls.
             self.config_manager.ensure_user()
