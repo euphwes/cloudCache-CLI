@@ -13,7 +13,7 @@ class ConfigAppCommand(BaseCommand):
         super(ConfigAppCommand, self).__init__(args, parent_app)
 
 
-    def _validate_args(self):
+    def _validate_and_parse_args(self):
         """ Make sure the passed arguments are relevant to this command, and are also
         acceptably formatted. """
 

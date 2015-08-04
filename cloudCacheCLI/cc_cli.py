@@ -5,13 +5,10 @@ import json
 from os.path import dirname, realpath, join
 
 import requests
-import arrow
-import tabulate
 
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
-from Commands import ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand
+from cloudCacheCLI import CFG_ACCESS_TOKEN
+from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand
 from ConfigManager import ConfigManager
-
 
 # -------------------------------------------------------------------------------------------------
 
@@ -29,6 +26,7 @@ class CloudCacheCliApp(object):
             sys.exit(0)
 
         self._build_commands()
+        self.action()
 
 
     def _build_commands(self):
@@ -120,12 +118,14 @@ class CloudCacheCliApp(object):
             self.commands[command](self.args, self)
 
         except requests.exceptions.ConnectionError:
-            print('\nUnable to connect to the cloudCache server.')
-            print('Ensure your server host and port configuration is correct, and that the server is running.')
+            msg  = '\nUnable to connect to the cloudCache server.'
+            msg += '\nEnsure your server host and port configuration is correct, and that the server is running.'
+            print(msg)
+
+        except CommandValidationError as error:
+            print('\n{}'.format(error))
 
 # -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    
     app = CloudCacheCliApp(sys.argv)
-    app.action()
