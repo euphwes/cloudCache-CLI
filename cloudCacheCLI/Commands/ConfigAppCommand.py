@@ -42,7 +42,6 @@ class ConfigAppCommand(BaseCommand):
                     del config[del_key]
 
         self.app.config_manager.save_config(config)
-
         self.app.config_manager.ensure_user()
         self.app.config_manager.ensure_api_key()
         self.app.config_manager.ensure_access_token()

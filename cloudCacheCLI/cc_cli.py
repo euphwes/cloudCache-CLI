@@ -117,7 +117,7 @@ class CloudCacheCliApp(object):
 
         try:
             command = self.args.pop(0)
-            self.commands[command](self.args, self).action()
+            self.commands[command](self.args, self)
 
         except requests.exceptions.ConnectionError:
             print('\nUnable to connect to the cloudCache server.')
