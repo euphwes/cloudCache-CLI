@@ -1,9 +1,13 @@
 """ Create a new user. """
 
-import requests, json, sys
+import json
+import sys
+
+import requests
 
 from cloudCacheCLI.Commands import BaseCommand
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
+from cloudCacheCLI import CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN
+
 
 # -------------------------------------------------------------------------------------------------
 
@@ -42,12 +46,12 @@ class NewUserCommand(BaseCommand):
         results  = json.loads(response.text)
 
         if response:
-            config = self.parent_app.load_config()
+            config = self.app.config_manager.load_config()
             if CFG_ACCESS_TOKEN in config:
                 del config[CFG_ACCESS_TOKEN]
             config[CFG_USER]    = self.username
             config[CFG_API_KEY] = results['api_key']
-            self.parent_app.save_config(config)
+            self.app.config_manager.save_config(config)
 
         else:
             print('\n** {} **'.format(results['message']))

@@ -24,7 +24,7 @@ class ConfigAppCommand(BaseCommand):
         self.key, self.val = self.args[0], self.args[1]
 
         if self.key not in (CFG_USER, CFG_SERVER, CFG_PORT):
-            print('\nThe configuration option "{}"" is not valid.'.format(key))
+            print('\nThe configuration option "{}"" is not valid.'.format(self.key))
             print('You may only configure "{}", "{}", or "{}".'.format(CFG_USER, CFG_PORT, CFG_SERVER))
             sys.exit(0)
 
@@ -32,7 +32,7 @@ class ConfigAppCommand(BaseCommand):
     def action(self):
         """ Configure the application with either the user, the server, or the port. """
 
-        config = self.parent_app.load_config()
+        config = self.app.config_manager.load_config()
         config[self.key] = self.val
 
         # If we're changing the user, delete any access token and api key since those will be invalid
@@ -41,8 +41,8 @@ class ConfigAppCommand(BaseCommand):
                 if del_key in config:
                     del config[del_key]
 
-        self.parent_app.save_config(config)
+        self.app.config_manager.save_config(config)
 
-        self.parent_app.ensure_user()
-        self.parent_app.ensure_api_key()
-        self.parent_app.ensure_access_token()
+        self.app.config_manager.ensure_user()
+        self.app.config_manager.ensure_api_key()
+        self.app.config_manager.ensure_access_token()

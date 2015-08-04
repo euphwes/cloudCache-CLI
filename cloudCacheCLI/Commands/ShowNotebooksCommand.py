@@ -1,9 +1,12 @@
 """ Show the user notebooks. """
 
-import requests, json, sys
+import json
+import sys
+
+import requests
 
 from cloudCacheCLI.Commands import BaseCommand
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
+from cloudCacheCLI.Utilities import get_table
 
 # -------------------------------------------------------------------------------------------------
 
@@ -35,7 +38,7 @@ class ShowNotebooksCommand(BaseCommand):
             else:
                 headers = ['ID', 'Notebook Name']
                 data = [[nb['id'], nb['name']] for nb in results['notebooks']]
-                print('\n' + self.get_table(data, headers=headers, indent=2))
+                print('\n' + get_table(data, headers=headers, indent=2))
 
         else:
             print('\n** {} **'.format(results['message']))

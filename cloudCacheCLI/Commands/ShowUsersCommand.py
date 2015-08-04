@@ -1,9 +1,13 @@
 """ Show the application users. """
 
-import requests, json, sys
+import json
+import sys
 
+import requests
+
+from cloudCacheCLI.Utilities import get_table
 from cloudCacheCLI.Commands import BaseCommand
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
+
 
 # -------------------------------------------------------------------------------------------------
 
@@ -32,7 +36,7 @@ class ShowUsersCommand(BaseCommand):
         if response:
             headers = ['ID', 'Username']
             data = [[user['id'], user['username']] for user in results['users']]
-            print('\n' + self.get_table(data, headers=headers, indent=2))
+            print('\n' + get_table(data, headers=headers, indent=2))
 
         else:
             print('\n** {} **'.format(results['message']))
