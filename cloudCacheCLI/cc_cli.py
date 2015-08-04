@@ -1,15 +1,13 @@
 """ The cloudCache CLI application module. """
 
 import sys
-import json
 from os.path import dirname, realpath, join
 
 import requests
 
 from ConfigManager import ConfigManager
-from cloudCacheCLI import CFG_ACCESS_TOKEN
 from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
-    ShowNotesCommand, NewNotebookCommand
+    ShowNotesCommand, NewNotebookCommand, NewNoteCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -28,7 +26,8 @@ class CloudCacheCliApp(object):
         self._build_commands()
         self.command = self.commands[self.args.pop(0)]
 
-        if not (self.command is ConfigAppCommand or self.command is NewUserCommand):
+        should_skip_ensure_steps = (self.command is ConfigAppCommand or self.command is NewUserCommand)
+        if not should_skip_ensure_steps:
             # Before executing any command other than config or newuser, ensure a user is configured, ensure we have a
             # valid API key, and also an access token so we can be making API calls.
             self.config_manager.ensure_user()
@@ -40,43 +39,16 @@ class CloudCacheCliApp(object):
 
 
     def _build_commands(self):
-        """ Build the Command objects. """
-
+        """ Build the dict mapping command strings to the classes which will execute them. """
         self.commands = {
             'config'     : ConfigAppCommand,
             'users'      : ShowUsersCommand,
             'notebooks'  : ShowNotebooksCommand,
             'newuser'    : NewUserCommand,
             'notes'      : ShowNotesCommand,
-            'newnotebook': NewNotebookCommand
+            'newnotebook': NewNotebookCommand,
+            'newnote'    : NewNoteCommand
         }
-
-        """
-        CMD_DICT = {
-            'notebooks'  : show_notebooks,
-            'newnote'    : new_note,
-        }
-        """
-
-    def new_note(args):
-        """ Create a new note. """
-
-        config = load_config()
-
-        headers = {'access token': config[CFG_ACCESS_TOKEN]}
-        body    = {
-            'note_key'     : args[1],
-            'note_value'   : args[2]
-        }
-
-        notebook = args[0]
-
-        url = '{}/notebooks/{}/notes'.format(base_url(), notebook)
-
-        response = requests.post(url, headers=headers, data=json.dumps(body))
-
-        if response.status_code != 200:
-            print('\n** {} **'.format(json.loads(response.text)['message']))
 
 
     def action(self):

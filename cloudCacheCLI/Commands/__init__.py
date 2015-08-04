@@ -15,3 +15,4 @@ from .ShowNotebooksCommand import ShowNotebooksCommand
 from .NewUserCommand import NewUserCommand
 from .ShowNotesCommand import ShowNotesCommand
 from .NewNotebookCommand import NewNotebookCommand
+from .NewNoteCommand import NewNoteCommand
