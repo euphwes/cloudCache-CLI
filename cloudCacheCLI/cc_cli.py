@@ -4,7 +4,7 @@ import sys, json, requests, arrow, tabulate
 from os.path import exists, dirname, realpath, join
 
 from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
-from Commands import ConfigAppCommand
+from Commands import ConfigAppCommand, ShowUsersCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -39,12 +39,11 @@ class CloudCacheCliApp(object):
 
         self.commands = dict()
         self.commands['config'] = ConfigAppCommand
+        self.commands['users']  = ShowUsersCommand
 
         """
         CMD_DICT = {
-            'config'     : config_app,
             'newuser'    : new_user,
-            'users'      : show_users,
             'newnotebook': new_notebook,
             'notebooks'  : show_notebooks,
             'newnote'    : new_note,
@@ -185,26 +184,6 @@ class CloudCacheCliApp(object):
         else:
             print('\n** {} **'.format(response['message']))
             sys.exit(0)
-
-
-    def show_users(args):
-        """ Show all users. """
-
-        config = load_config()
-
-        url = '{}/users'.format(base_url())
-
-        headers = {'access token': config[CFG_ACCESS_TOKEN]}
-
-        response = requests.get(url, headers=headers)
-        results  = json.loads(response.text)
-
-        if response.status_code == 200:
-            headers = ['ID', 'Username']
-            data = [[user['id'], user['username']] for user in results['users']]
-            print('\n' + get_table(data, headers=headers, indent=2))
-        else:
-            print('\n** {} **'.format(results['message']))
 
 
     def show_notebooks(args):
