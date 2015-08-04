@@ -9,7 +9,7 @@ import requests
 from ConfigManager import ConfigManager
 from cloudCacheCLI import CFG_ACCESS_TOKEN
 from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
-    ShowNotesCommand
+    ShowNotesCommand, NewNotebookCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -43,37 +43,20 @@ class CloudCacheCliApp(object):
         """ Build the Command objects. """
 
         self.commands = {
-            'config'   : ConfigAppCommand,
-            'users'    : ShowUsersCommand,
-            'notebooks': ShowNotebooksCommand,
-            'newuser'  : NewUserCommand,
-            'notes'    : ShowNotesCommand
+            'config'     : ConfigAppCommand,
+            'users'      : ShowUsersCommand,
+            'notebooks'  : ShowNotebooksCommand,
+            'newuser'    : NewUserCommand,
+            'notes'      : ShowNotesCommand,
+            'newnotebook': NewNotebookCommand
         }
 
         """
         CMD_DICT = {
-            'newnotebook': new_notebook,
             'notebooks'  : show_notebooks,
             'newnote'    : new_note,
         }
         """
-
-
-    def new_notebook(args):
-        """ Create a new notebook. """
-
-        config = load_config()
-
-        headers = {'access token': config[CFG_ACCESS_TOKEN]}
-        body    = {'notebook_name': args[0]}
-
-        url = '{}/notebooks'.format(base_url())
-
-        response = requests.post(url, headers=headers, data=json.dumps(body))
-
-        if response.status_code != 200:
-            print('\n** {} **'.format(json.loads(response.text)['message']))
-
 
     def new_note(args):
         """ Create a new note. """
