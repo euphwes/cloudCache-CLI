@@ -7,11 +7,22 @@ import requests
 
 from ConfigManager import ConfigManager
 from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
-    ShowNotesCommand, NewNotebookCommand, NewNoteCommand
+    ShowNotesCommand, NewNotebookCommand, NewNoteCommand, ShowNoteCommand
 
 # -------------------------------------------------------------------------------------------------
 
 class CloudCacheCliApp(object):
+
+    commands = {
+        'config'     : ConfigAppCommand,
+        'users'      : ShowUsersCommand,
+        'notebooks'  : ShowNotebooksCommand,
+        'newuser'    : NewUserCommand,
+        'notes'      : ShowNotesCommand,
+        'newnotebook': NewNotebookCommand,
+        'newnote'    : NewNoteCommand,
+        'note'       : ShowNoteCommand
+    }
 
     def __init__(self, args):
         # discard the first argument, which is the script name
@@ -23,8 +34,13 @@ class CloudCacheCliApp(object):
             self.config_manager.echo_config()
             sys.exit(0)
 
-        self._build_commands()
-        self.command = self.commands[self.args.pop(0)]
+        try:
+            user_command = self.args.pop(0)
+            self.command = self.commands[user_command]
+        except KeyError:
+            print('\n`{}` is not a valid cloudCache command.'.format(user_command))
+            return
+            # TODO display help
 
         should_skip_ensure_steps = (self.command is ConfigAppCommand or self.command is NewUserCommand)
         if not should_skip_ensure_steps:
@@ -38,22 +54,8 @@ class CloudCacheCliApp(object):
         self.action()
 
 
-    def _build_commands(self):
-        """ Build the dict mapping command strings to the classes which will execute them. """
-        self.commands = {
-            'config'     : ConfigAppCommand,
-            'users'      : ShowUsersCommand,
-            'notebooks'  : ShowNotebooksCommand,
-            'newuser'    : NewUserCommand,
-            'notes'      : ShowNotesCommand,
-            'newnotebook': NewNotebookCommand,
-            'newnote'    : NewNoteCommand
-        }
-
-
     def action(self):
         """ Perform the selected command action. """
-
         try:
             self.command(self.args, self)
 

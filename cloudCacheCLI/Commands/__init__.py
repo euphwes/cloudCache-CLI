@@ -16,3 +16,4 @@ from .NewUserCommand import NewUserCommand
 from .ShowNotesCommand import ShowNotesCommand
 from .NewNotebookCommand import NewNotebookCommand
 from .NewNoteCommand import NewNoteCommand
+from .ShowNoteCommand import ShowNoteCommand

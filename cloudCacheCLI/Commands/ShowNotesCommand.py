@@ -9,7 +9,7 @@ class ShowNotesCommand(GetCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNotesCommand, self).__init__(args, parent_app)
-        self.url = '{}/notebooks/{}/notes/'.format(self.base_url, self.notebook_id)
+        self.url = '{}/notebooks/{}/notes'.format(self.base_url, self.notebook_id)
         self.action()
 
 
