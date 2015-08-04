@@ -1,11 +1,11 @@
 """ Show the notes in the specified notebook. """
 
-from . import CommandValidationError, BaseCommand
+from . import CommandValidationError, GetCommand
 from cloudCacheCLI.Utilities import get_table
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-class ShowNotesCommand(BaseCommand):
+class ShowNotesCommand(GetCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNotesCommand, self).__init__(args, parent_app)

@@ -4,16 +4,22 @@ import json
 
 import requests
 
-from . import CommandValidationError, BaseCommand
+from . import CommandValidationError, PostCommand
 from cloudCacheCLI import CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-class NewUserCommand(BaseCommand):
+class NewUserCommand(PostCommand):
 
     def __init__(self, args, parent_app):
         super(NewUserCommand, self).__init__(args, parent_app)
         self.url = '{}/users/'.format(self.base_url)
+        self.body = {
+            'username'  : self.username,
+            'first_name': self.first_name,
+            'last_name' : self.last_name,
+            'email'     : self.email
+        }
         self.action()
 
 
@@ -42,19 +48,3 @@ class NewUserCommand(BaseCommand):
         config[CFG_USER] = self.username
         config[CFG_API_KEY] = self.results['api_key']
         self.app.config_manager.save_config(config)
-
-
-    def action(self):
-        """ OVERRIDE - Create a new user, and save the relevant details to the config. """
-
-        body = {
-            'username'  : self.username,
-            'first_name': self.first_name,
-            'last_name' : self.last_name,
-            'email'     : self.email
-        }
-
-        response = requests.post(self.url, data=json.dumps(body))
-        self.results  = json.loads(response.text)
-
-        self._on_action_success() if response else self._on_action_failure()

@@ -6,6 +6,9 @@ class CommandValidationError(Exception):
 # ---------------------------------------------------------------------------------------------------------------------
 
 from .BaseCommand import BaseCommand
+from .PostCommand import PostCommand
+from .GetCommand import GetCommand
+
 from .ConfigAppCommand import ConfigAppCommand
 from .ShowUsersCommand import ShowUsersCommand
 from .ShowNotebooksCommand import ShowNotebooksCommand

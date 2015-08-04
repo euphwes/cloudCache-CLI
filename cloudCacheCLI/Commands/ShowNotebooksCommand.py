@@ -2,12 +2,12 @@
 
 import sys
 
-from . import CommandValidationError, BaseCommand
+from . import CommandValidationError, GetCommand
 from cloudCacheCLI.Utilities import get_table
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ShowNotebooksCommand(BaseCommand):
+class ShowNotebooksCommand(GetCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNotebooksCommand, self).__init__(args, parent_app)

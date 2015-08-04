@@ -29,7 +29,6 @@ class BaseCommand(object):
     def action(self):
         """ Evaluates this Command by performing its API call. The response object itself, and the json/dict contents
         of the response, are set as instance attributes so we can reference them later. """
-        self.response = requests.get(self.url, headers=self.headers)
         self.results = json.loads(self.response.text)
 
         # requests.response with a status_code of 200 evaluates as 'True' if checked as a bool

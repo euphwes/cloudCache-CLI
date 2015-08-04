@@ -1,11 +1,11 @@
 """ Show the application users. """
 
-from . import CommandValidationError, BaseCommand
+from . import CommandValidationError, GetCommand
 from cloudCacheCLI.Utilities import get_table
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-class ShowUsersCommand(BaseCommand):
+class ShowUsersCommand(GetCommand):
 
     def __init__(self, args, parent_app):
         super(ShowUsersCommand, self).__init__(args, parent_app)
