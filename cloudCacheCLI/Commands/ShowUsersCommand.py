@@ -1,8 +1,7 @@
 """ Show the application users. """
 
-from . import CommandValidationError
+from . import CommandValidationError, BaseCommand
 from cloudCacheCLI.Utilities import get_table
-from cloudCacheCLI.Commands import BaseCommand
 
 # ---------------------------------------------------------------------------------------------------------------------
 
