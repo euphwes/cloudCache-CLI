@@ -1,16 +1,16 @@
 """ The base command class which all other commands subclass. """
 
 import sys, json, requests, arrow
-from cloudCache.Constants import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
+from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 
 # -------------------------------------------------------------------------------------------------
 
 class BaseCommand(object):
     """ The base command class. """
 
-    def __init__(self, args, config_file):
+    def __init__(self, args, parent_app):
         self.args = args
-        self.config_file = config_file
+        self.parent_app = parent_app
         self._validate_args()
 
 
@@ -30,4 +30,5 @@ class BaseCommand(object):
     @property
     def base_url(self):
         """ Build and return the base URL for the API endpoints. """
-        return 'http://{}:{}'.format(self.config[CFG_SERVER], self.config[CFG_PORT])
+        config = self.parent_app.load_config()
+        return 'http://{}:{}'.format(config[CFG_SERVER], config[CFG_PORT])

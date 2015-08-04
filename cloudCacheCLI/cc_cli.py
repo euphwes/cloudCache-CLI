@@ -3,14 +3,8 @@
 import sys, json, requests, arrow, tabulate
 from os.path import exists, dirname, realpath, join
 
-# -------------------------------------------------------------------------------------------------
-
-CFG_SERVER        = 'server'
-CFG_PORT          = 'port'
-CFG_USER          = 'user'
-CFG_API_KEY       = 'api key'
-CFG_ACCESS_TOKEN  = 'access token'
-CFG_TOKEN_EXPIRES = 'token expires'
+from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
+from Commands import ConfigAppCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -140,17 +134,23 @@ class CloudCacheCliApp(object):
             return
 
         # If we get here, we don't have an API key, so let's go get one
-        url = '{}/users/{}'.format(base_url(), config[CFG_USER])
+        url = '{}/users/{}'.format(self.base_url(), config[CFG_USER])
 
         response = requests.get(url)
         results  = json.loads(response.text)
 
         if response.status_code == 200:
             config[CFG_API_KEY] = results['user']['api_key']
-            save_config(config)
+            self.save_config(config)
         else:
             print('\n** {} **'.format(results['message']))
             sys.exit(0)
+
+
+    def base_url(self):
+        """ Build and return the base URL for the API endpoints. """
+        config = self.load_config()
+        return 'http://{}:{}'.format(config[CFG_SERVER], config[CFG_PORT])
 
 
     def ensure_access_token(self):
@@ -169,10 +169,10 @@ class CloudCacheCliApp(object):
                 for key in (CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES):
                     if key in config:
                         del config[key]
-                save_config(config)
+                self.save_config(config)
 
         # If we get here, either the token doesn't exist, or was expired and deleted. Get a new one
-        url = '{}/access/{}/{}'.format(base_url(), config[CFG_USER], config[CFG_API_KEY])
+        url = '{}/access/{}/{}'.format(self.base_url(), config[CFG_USER], config[CFG_API_KEY])
 
         response = requests.get(url)
         results  = json.loads(response.text)
@@ -180,7 +180,7 @@ class CloudCacheCliApp(object):
         if response.status_code == 200:
             config[CFG_ACCESS_TOKEN]  = results['access token']['access_token']
             config[CFG_TOKEN_EXPIRES] = results['access token']['expires_on']
-            save_config(config)
+            self.save_config(config)
 
         else:
             print('\n** {} **'.format(response['message']))
@@ -315,28 +315,21 @@ class CloudCacheCliApp(object):
         else:
             print('\n** {} **'.format(results['message']))
 
+
+    def action(self):
+        """ Perform the selected command action. """
+
+        try:
+            command = self.args.pop(0)
+            self.commands[command](self.args, self).action()
+
+        except requests.exceptions.ConnectionError:
+            print('\nUnable to connect to the cloudCache server.')
+            print('Ensure your server host and port configuration is correct, and that the server is running.')
+
 # -------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
     
     app = CloudCacheCliApp(sys.argv)
-
-
-
-    
-
-
-
-    try:
-        # If the command is 'config', perform the configuration and exit the script
-        # If the command is 'newuser', create the user via the REST API, save config, and exit
-        COMMAND = sys.argv.pop(0)
-        if COMMAND in ('config', 'newuser'):
-            CMD_DICT[COMMAND](sys.argv)
-            sys.exit(0)
-
-        CMD_DICT[COMMAND](sys.argv)
-
-    except requests.exceptions.ConnectionError:
-        print('\nUnable to connect to the cloudCache server.')
-        print('Ensure your server host and port configuration is correct, and that the server is running.')
+    app.action()
