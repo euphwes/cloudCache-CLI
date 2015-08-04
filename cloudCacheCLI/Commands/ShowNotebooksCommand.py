@@ -1,7 +1,5 @@
 """ Show the user notebooks. """
 
-import sys
-
 from . import CommandValidationError, GetCommand
 from cloudCacheCLI.Utilities import get_table
 

@@ -1,9 +1,5 @@
 """ Create a new user. """
 
-import json
-
-import requests
-
 from . import CommandValidationError, PostCommand
 from cloudCacheCLI import CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 

@@ -5,8 +5,6 @@ import requests
 
 from . import BaseCommand
 
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_ACCESS_TOKEN
-
 # -------------------------------------------------------------------------------------------------
 
 class PostCommand(BaseCommand):

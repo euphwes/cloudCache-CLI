@@ -1,11 +1,7 @@
 """ The base command class which all other commands subclass. """
 
-import json
 import requests
-
 from . import BaseCommand
-
-from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_ACCESS_TOKEN
 
 # -------------------------------------------------------------------------------------------------
 
