@@ -24,13 +24,6 @@ class BaseCommand(object):
 
 
     @property
-    def url(self):
-        """ Any subclass must implement this property. Return the API endpoint URL which this
-        command uses, based on args and configuration. """
-        raise NotImplementedError()
-
-
-    @property
     def base_url(self):
         """ Build and return the base URL for the API endpoints. """
         config = self.parent_app.load_config()

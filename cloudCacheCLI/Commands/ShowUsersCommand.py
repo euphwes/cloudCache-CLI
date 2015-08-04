@@ -11,13 +11,7 @@ class ShowUsersCommand(BaseCommand):
 
     def __init__(self, args, parent_app):
         super(ShowUsersCommand, self).__init__(args, parent_app)
-
-
-    @property
-    def url(self):
-        """ Any subclass must implement this property. Return the API endpoint URL which this
-        command uses, based on args and configuration. """
-        return '{}/users'.format(self.base_url)
+        self.url = '{}/users'.format(self.base_url)
 
 
     def _validate_args(self):
@@ -35,7 +29,7 @@ class ShowUsersCommand(BaseCommand):
         response = requests.get(self.url, headers=self.headers)
         results  = json.loads(response.text)
 
-        if response.status_code == 200:
+        if response:
             headers = ['ID', 'Username']
             data = [[user['id'], user['username']] for user in results['users']]
             print('\n' + self.get_table(data, headers=headers, indent=2))

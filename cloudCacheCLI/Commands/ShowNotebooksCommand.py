@@ -11,13 +11,7 @@ class ShowNotebooksCommand(BaseCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNotebooksCommand, self).__init__(args, parent_app)
-
-
-    @property
-    def url(self):
-        """ Any subclass must implement this property. Return the API endpoint URL which this
-        command uses, based on args and configuration. """
-        return '{}/notebooks'.format(self.base_url)
+        self.url = '{}/notebooks'.format(self.base_url)
 
 
     def _validate_args(self):
@@ -33,14 +27,15 @@ class ShowNotebooksCommand(BaseCommand):
         """ Show all notebooks for this user. """
 
         response = requests.get(self.url, headers=self.headers)
-        results = json.loads(response.text)
+        results  = json.loads(response.text)
 
-        if response.status_code == 200:
+        if response:
             if len(results['notebooks']) == 0:
                 print('\n' + get_table([['No notebooks exist for this user']], indent=2))
             else:
                 headers = ['ID', 'Notebook Name']
                 data = [[nb['id'], nb['name']] for nb in results['notebooks']]
                 print('\n' + self.get_table(data, headers=headers, indent=2))
+
         else:
             print('\n** {} **'.format(results['message']))
