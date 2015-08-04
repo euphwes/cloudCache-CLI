@@ -32,6 +32,6 @@ class ShowNotesCommand(GetCommand):
             print('\n' + get_table([['This notebook does not have any notes yet.']], indent=2))
         else:
             print('\n' + get_table([[notebook]], indent=2))
-            data = [[note['key'], note['value']] for note in notes]
-            table_headers = ['Note name', 'Note contents']
+            data = [[note['id'], note['key'], note['value']] for note in notes]
+            table_headers = ['ID', 'Note name', 'Note contents']
             print(get_table(data, headers=table_headers, indent=6))

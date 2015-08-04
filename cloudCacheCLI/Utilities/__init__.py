@@ -16,7 +16,7 @@ def get_table(data, headers=(), indent=0, table_format='fancy_grid'):
         string: The formatted table of data
     """
 
-    table  = tabulate.tabulate(data, headers=headers, tablefmt=table_format)
+    table  = tabulate.tabulate(data, headers=headers, numalign='left', tablefmt=table_format)
     indent = ' ' * indent
 
     return '\n'.join(indent + line for line in table.split('\n'))
