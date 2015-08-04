@@ -19,7 +19,10 @@ class BaseCommand(object):
         self._validate_and_parse_args()
 
         config = self.app.config_manager.load_config()
-        self.headers = {'access token': config[CFG_ACCESS_TOKEN]}
+
+        if CFG_ACCESS_TOKEN in config:
+            self.headers = {'access token': config[CFG_ACCESS_TOKEN]}
+
         self.base_url = 'http://{}:{}'.format(config[CFG_SERVER], config[CFG_PORT])
 
 

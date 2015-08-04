@@ -17,15 +17,27 @@ class CloudCacheCliApp(object):
     def __init__(self, args):
         # discard the first argument, which is the script name
         self.args = args[1:]
+        self._build_commands()
 
         self.config_manager = ConfigManager(join(dirname(realpath(__file__)), '.ccconfig'))
+
+        # if the command is config or newuser, do this before doing any 'ensure_x' steps in the config manager
+        if len(self.args) > 0 and self.args[0] in ['newuser', 'config']:
+            self.action()
+            return
 
         # If no arguments are provided, just echo the current configuration and exit the script
         if len(self.args) == 0:
             self.config_manager.echo_config()
             sys.exit(0)
 
-        self._build_commands()
+        # Before executing any command (other than config or newuser), ensure a user is configured, ensure we have a
+        # valid API key, and also an access token so we can be making API calls.
+        self.config_manager.ensure_user()
+        self.config_manager.ensure_api_key()
+        self.config_manager.ensure_access_token()
+
+        # Execute any other command now
         self.action()
 
 

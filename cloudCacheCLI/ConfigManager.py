@@ -11,7 +11,7 @@ import requests
 from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 from cloudCacheCLI.Utilities import get_table
 
-# -------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 class ConfigManager(object):
     """ Manages the cloucCache CLI application configuration. """
@@ -22,12 +22,6 @@ class ConfigManager(object):
 
         config = self.load_config()
         self.base_url = 'http://{}:{}'.format(config[CFG_SERVER], config[CFG_PORT])
-
-        # Before executing any command, ensure a user is configured, ensure we have a valid
-        # API key, and also an access token so we can be making API calls.
-        self.ensure_user()
-        self.ensure_api_key()
-        self.ensure_access_token()
 
 
     def ensure_user(self):
@@ -41,13 +35,13 @@ class ConfigManager(object):
         print('\nPlease configure an existing cloudCache user by running the following command:')
         print('cc config user [username] --> ex: cc config user euphwes')
         print('\nTo create and configure a new user, run the following command:')
-        print('cc newuser [username] --> ex: cc newuser euphwes')
+        print('cc newuser [username] [first name] [last name] [email] --> ex: cc newuser euphwes Wes Evans euphwes@gmail.com')
         sys.exit(0)
 
 
     def ensure_access_token(self):
-        """ Make sure the config file has an access token, which is not expired. If it's expired,
-        delete it and obtain a new one. """
+        """ Make sure the config file has an access token, which is not expired. If it's expired, delete it and obtain
+        a new one. """
 
         config = self.load_config()
 
@@ -69,13 +63,14 @@ class ConfigManager(object):
         response = requests.get(url)
         results  = json.loads(response.text)
 
-        if response.status_code == 200:
+        if response:
             config[CFG_ACCESS_TOKEN]  = results['access token']['access_token']
             config[CFG_TOKEN_EXPIRES] = results['access token']['expires_on']
             self.save_config(config)
 
         else:
-            print('\n** {} **'.format(response['message']))
+            # Probably because the user configured doesn't exist. Don't bother trying to continue on, just exit
+            print('\n' + response['message'])
             sys.exit(0)
 
 
@@ -94,18 +89,18 @@ class ConfigManager(object):
         response = requests.get(url)
         results  = json.loads(response.text)
 
-        if response.status_code == 200:
+        if response:
             config[CFG_API_KEY] = results['user']['api_key']
             self.save_config(config)
         else:
-            print('\n** {} **'.format(results['message']))
+            # Probably because the user configured doesn't exist. Don't bother trying to continue on, just exit
+            print('\n' + results['message'])
             sys.exit(0)
 
 
     def _ensure_config(self):
         """ Ensures a config file exists. Write default server location and port. Don't touch anything
         if the config file already exists. """
-
         if not exists(self.config_file):
             config = {CFG_SERVER: 'localhost', CFG_PORT: '8888'}
             self.save_config(config)
@@ -113,14 +108,12 @@ class ConfigManager(object):
 
     def load_config(self):
         """ Loads the config from the config file and returns it as a dict. """
-
         with open(self.config_file, 'r') as config_file:
             return json.load(config_file)
 
 
     def save_config(self, config):
         """ Save the config info from the supplied dict to the config file as JSON. """
-
         with open(self.config_file, 'w') as config_file:
             json.dump(config, config_file, indent=4, separators=(',', ': '))
 
