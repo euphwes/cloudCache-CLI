@@ -6,9 +6,10 @@ from os.path import dirname, realpath, join
 
 import requests
 
-from cloudCacheCLI import CFG_ACCESS_TOKEN
-from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand
 from ConfigManager import ConfigManager
+from cloudCacheCLI import CFG_ACCESS_TOKEN
+from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
+    ShowNotesCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -45,7 +46,8 @@ class CloudCacheCliApp(object):
             'config'   : ConfigAppCommand,
             'users'    : ShowUsersCommand,
             'notebooks': ShowNotebooksCommand,
-            'newuser'  : NewUserCommand
+            'newuser'  : NewUserCommand,
+            'notes'    : ShowNotesCommand
         }
 
         """
@@ -53,33 +55,8 @@ class CloudCacheCliApp(object):
             'newnotebook': new_notebook,
             'notebooks'  : show_notebooks,
             'newnote'    : new_note,
-            'notes'      : show_notes
         }
         """
-
-
-
-    def show_notes(args):
-        """ Show all notes for this user's notebook. """
-
-        config = load_config()
-
-        url = '{}/notebooks/{}/notes/'.format(base_url(), args[0])
-        headers = {'access token': config[CFG_ACCESS_TOKEN]}
-
-        response = requests.get(url, headers=headers)
-        results = json.loads(response.text)
-
-        if response.status_code == 200:
-            if len(results['notes']) == 0:
-                print('\n' + get_table([['This notebook does not have any notes yet.']], indent=2))
-            else:
-                print('\n' + get_table([[results['notebook']]], indent=2))
-                data    = [[note['key'], note['value']] for note in results['notes']]
-                headers = ['Note name', 'Note contents']
-                print(get_table(data, headers=headers, indent=6))
-        else:
-            print('\n** {} **'.format(results['message']))
 
 
     def new_notebook(args):

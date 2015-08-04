@@ -10,3 +10,4 @@ from .ConfigAppCommand import ConfigAppCommand
 from .ShowUsersCommand import ShowUsersCommand
 from .ShowNotebooksCommand import ShowNotebooksCommand
 from .NewUserCommand import NewUserCommand
+from .ShowNotesCommand import ShowNotesCommand
