@@ -19,3 +19,4 @@ from .NewNotebookCommand import NewNotebookCommand
 from .NewNoteCommand import NewNoteCommand
 from .ShowNoteCommand import ShowNoteCommand
 from .DeleteNoteCommand import DeleteNoteCommand
+from .DeleteNotebookCommand import DeleteNotebookCommand
