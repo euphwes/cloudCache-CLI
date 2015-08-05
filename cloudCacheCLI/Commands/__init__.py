@@ -8,6 +8,7 @@ class CommandValidationError(Exception):
 from .BaseCommand import BaseCommand
 from .PostCommand import PostCommand
 from .GetCommand import GetCommand
+from .DeleteCommand import DeleteCommand
 
 from .ConfigAppCommand import ConfigAppCommand
 from .ShowUsersCommand import ShowUsersCommand
@@ -17,3 +18,4 @@ from .ShowNotesCommand import ShowNotesCommand
 from .NewNotebookCommand import NewNotebookCommand
 from .NewNoteCommand import NewNoteCommand
 from .ShowNoteCommand import ShowNoteCommand
+from .DeleteNoteCommand import DeleteNoteCommand

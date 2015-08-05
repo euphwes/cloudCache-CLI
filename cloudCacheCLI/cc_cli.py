@@ -7,7 +7,7 @@ import requests
 
 from ConfigManager import ConfigManager
 from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
-    ShowNotesCommand, NewNotebookCommand, NewNoteCommand, ShowNoteCommand
+    ShowNotesCommand, NewNotebookCommand, NewNoteCommand, ShowNoteCommand, DeleteNoteCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -21,7 +21,8 @@ class CloudCacheCliApp(object):
         'notes'      : ShowNotesCommand,
         'newnotebook': NewNotebookCommand,
         'newnote'    : NewNoteCommand,
-        'note'       : ShowNoteCommand
+        'note'       : ShowNoteCommand,
+        'deletenote' : DeleteNoteCommand
     }
 
     def __init__(self, args):
