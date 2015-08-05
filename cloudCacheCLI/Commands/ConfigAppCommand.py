@@ -16,8 +16,8 @@ class ConfigAppCommand(BaseCommand):
         """ Make sure the passed arguments are relevant to this command, and are also
         acceptably formatted. """
 
-        if len(self.args) > 2:
-            msg  = 'The config command only takes 2 parameters.\n'
+        if len(self.args) != 2:
+            msg  = 'The config command takes exactly 2 parameters.\n'
             msg += 'The first argument must be one of [server, port, user].\n'
             msg += 'The second argument must be the value that configuration option is to take.'
             raise CommandValidationError(msg)
