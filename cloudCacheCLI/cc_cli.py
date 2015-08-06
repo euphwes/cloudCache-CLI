@@ -3,7 +3,7 @@
 import sys
 from os.path import dirname, realpath, join
 
-import requests
+from requests.exceptions import ConnectionError
 
 from ConfigManager import ConfigManager
 from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
@@ -61,7 +61,7 @@ class CloudCacheCliApp(object):
         try:
             self.command(self.args, self)
 
-        except requests.exceptions.ConnectionError:
+        except ConnectionError:
             msg  = '\nUnable to connect to the cloudCache server.'
             msg += '\nEnsure your server host and port configuration is correct, and that the server is running.'
             print(msg)

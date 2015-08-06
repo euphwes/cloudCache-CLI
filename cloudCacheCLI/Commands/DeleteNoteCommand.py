@@ -9,6 +9,7 @@ class DeleteNoteCommand(DeleteCommand):
     def __init__(self, args, parent_app):
         super(DeleteNoteCommand, self).__init__(args, parent_app)
         self.url = '{}/notes/{}'.format(self.base_url, self.note_id)
+        self.prompt = 'Are you sure you want to delete this note? This action is irreversible.'
         self.action()
 
 

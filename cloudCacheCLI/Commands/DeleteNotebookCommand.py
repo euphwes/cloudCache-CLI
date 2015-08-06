@@ -9,6 +9,7 @@ class DeleteNotebookCommand(DeleteCommand):
     def __init__(self, args, parent_app):
         super(DeleteNotebookCommand, self).__init__(args, parent_app)
         self.url = '{}/notebooks/{}'.format(self.base_url, self.notebook_id)
+        self.prompt = 'Are you sure you want to delete this notebook? All notes in this notebook will also be deleted.'
         self.action()
 
 
