@@ -34,6 +34,7 @@ class ShowNoteCommand(GetCommand):
         created_on = arrow.get(self.results['created_on']).to('local').format('MM-DD-YY, hh:mm:ss A')
         last_updated = arrow.get(self.results['last_updated']).to('local').format('MM-DD-YY, hh:mm:ss A')
 
-        data = [[id, key, val, created_on, last_updated]]
-        table_headers = ['ID', 'Note name', 'Note contents', 'Created on', 'Last updated']
-        print('\n' + get_table(data, headers=table_headers, indent=2))
+        head = ['ID', 'Note name', 'Note contents', 'Created on', 'Last updated']
+        vals = [id, key, val, created_on, last_updated]
+
+        print('\n' + get_table(zip(head, vals), indent=2))
