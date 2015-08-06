@@ -1,7 +1,7 @@
 """ The base command class which all other commands subclass. """
 
 import requests
-from . import BaseCommand
+from Commands import BaseCommand
 
 # -------------------------------------------------------------------------------------------------
 

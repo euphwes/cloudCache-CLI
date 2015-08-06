@@ -6,8 +6,10 @@ from os.path import dirname, realpath, join
 from requests.exceptions import ConnectionError
 
 from ConfigManager import ConfigManager
-from Commands import CommandValidationError, ConfigAppCommand, ShowUsersCommand, ShowNotebooksCommand, NewUserCommand,\
-    ShowNotesCommand, NewNotebookCommand, NewNoteCommand, ShowNoteCommand, DeleteNoteCommand, DeleteNotebookCommand
+from Commands import CommandValidationError, ConfigAppCommand
+from Commands.UserCommands import NewUserCommand, ShowUsersCommand, DeleteUserCommand
+from Commands.NotebookCommands import DeleteNotebookCommand, NewNotebookCommand, ShowNotebooksCommand
+from Commands.NoteCommands import DeleteNoteCommand, ShowNotesCommand, NewNoteCommand, ShowNoteCommand
 
 # -------------------------------------------------------------------------------------------------
 
@@ -23,7 +25,8 @@ class CloudCacheCliApp(object):
         'newnote': NewNoteCommand,
         'note': ShowNoteCommand,
         'deletenote': DeleteNoteCommand,
-        'deletenotebook': DeleteNotebookCommand
+        'deletenotebook': DeleteNotebookCommand,
+        'deleteuser': DeleteUserCommand
     }
 
     def __init__(self, args):

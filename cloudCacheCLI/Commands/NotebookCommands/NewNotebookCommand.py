@@ -1,6 +1,7 @@
 """ Create a new Notebook. """
 
-from . import CommandValidationError, PostCommand
+from .. import CommandValidationError
+from ..BaseCommands import PostCommand
 
 # ---------------------------------------------------------------------------------------------------------------------
 

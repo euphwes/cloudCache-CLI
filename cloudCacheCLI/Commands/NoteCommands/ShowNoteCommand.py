@@ -2,8 +2,8 @@
 
 import arrow
 
-from . import CommandValidationError, GetCommand
-from cloudCacheCLI.Utilities import get_table
+from .. import CommandValidationError
+from ..BaseCommands import GetCommand
 
 # ---------------------------------------------------------------------------------------------------------------------
 

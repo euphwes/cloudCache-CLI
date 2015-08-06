@@ -1,6 +1,7 @@
 """ Show the notes in the specified notebook. """
 
-from . import CommandValidationError, DeleteCommand
+from .. import CommandValidationError
+from ..BaseCommands import DeleteCommand
 
 # ---------------------------------------------------------------------------------------------------------------------
 
