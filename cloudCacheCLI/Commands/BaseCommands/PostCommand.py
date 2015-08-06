@@ -3,7 +3,7 @@
 import json
 import requests
 
-from Commands import BaseCommand
+from . import BaseCommand
 
 # -------------------------------------------------------------------------------------------------
 

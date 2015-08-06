@@ -6,7 +6,8 @@ from getpass import getpass
 
 import requests
 
-from Commands import CommandValidationError, DeleteCommand
+from ..BaseCommands import DeleteCommand
+from .. import CommandValidationError
 
 # ---------------------------------------------------------------------------------------------------------------------
 

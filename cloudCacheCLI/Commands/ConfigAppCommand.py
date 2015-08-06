@@ -1,6 +1,7 @@
 """ Configure the application. """
 
-from . import CommandValidationError, BaseCommand
+from . import CommandValidationError
+from .BaseCommands import BaseCommand
 from cloudCacheCLI import CFG_SERVER, CFG_PORT, CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 
 # --------------------------------------------------------------------------------------------------------------------

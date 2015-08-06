@@ -2,7 +2,8 @@
 
 from getpass import getpass
 
-from Commands import CommandValidationError, PostCommand
+from ..BaseCommands import PostCommand
+from .. import CommandValidationError
 from cloudCacheCLI import CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 
 # ---------------------------------------------------------------------------------------------------------------------

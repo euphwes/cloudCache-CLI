@@ -2,7 +2,7 @@
 
 import requests
 
-from Commands import BaseCommand
+from . import BaseCommand
 from distutils.util import strtobool
 
 # -------------------------------------------------------------------------------------------------
