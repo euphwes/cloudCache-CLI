@@ -3,6 +3,7 @@
 import json
 import sys
 from os.path import exists
+from getpass import getpass
 
 import arrow
 
@@ -86,16 +87,16 @@ class ConfigManager(object):
         # If we get here, we don't have an API key, so let's go get one
         url = '{}/users/{}'.format(self.base_url, config[CFG_USER])
 
-        response = requests.get(url)
+        response = requests.get(url, data=json.dumps({'password': getpass('\nPassword: ')}))
         results  = json.loads(response.text)
 
         if response:
             config[CFG_API_KEY] = results['user']['api_key']
             self.save_config(config)
         else:
-            # Probably because the user configured doesn't exist. Don't bother trying to continue on, just exit
+            # Probably because the user configured doesn't exist, or password is wrong
             print('\n' + results['message'])
-            sys.exit(0)
+            raise Exception()
 
 
     def _ensure_config(self):

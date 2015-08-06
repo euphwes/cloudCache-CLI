@@ -30,21 +30,40 @@ class ConfigAppCommand(BaseCommand):
             raise CommandValidationError(msg)
 
 
-    def action(self):
-        """ OVERRIDE - Configure the application with a new value for either the user, the server, or the port. """
-
+    def _change_port_or_server(self):
+        """ Change port or server in the configuration file. """
         config = self.app.config_manager.load_config()
         config[self.key] = self.val
 
-        # If we're changing the user, delete any access token and api key since those will be invalid
-        if self.key == CFG_USER:
-            for del_key in (CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES):
-                if del_key in config:
-                    del config[del_key]
+
+    def _change_user(self):
+        """ Attempt to change user in the configuration file. If the change fails (invalid username or password, or
+         some other reason, fall back to the original user-related details in the config. """
+
+        config_orig = self.app.config_manager.load_config()
+        config_copy = self.app.config_manager.load_config()
+
+        # Update the actual value for the selected key
+        config_copy[self.key] = self.val
+
+        # Delete any access token and api key since those will be invalid
+        for del_key in (CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES):
+            if del_key in config_copy:
+                del config_copy[del_key]
 
         # Save the configuration with the new value. Re-check user, API key, and access token, since those were
         # potentially lost if the caller configured a new user
-        self.app.config_manager.save_config(config)
-        self.app.config_manager.ensure_user()
-        self.app.config_manager.ensure_api_key()
-        self.app.config_manager.ensure_access_token()
+        try:
+            self.app.config_manager.save_config(config_copy)
+            self.app.config_manager.ensure_user()
+            self.app.config_manager.ensure_api_key()
+            self.app.config_manager.ensure_access_token()
+
+        except Exception:
+            print('\nUser change failed. Reverting back to original settings.')
+            self.app.config_manager.save_config(config_orig)
+
+
+    def action(self):
+        """ OVERRIDE - Configure the application with a new value for either the user, the server, or the port. """
+        self._change_user() if (self.key == CFG_USER) else self._change_port_or_server()

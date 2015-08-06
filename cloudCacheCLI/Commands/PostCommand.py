@@ -19,7 +19,12 @@ class PostCommand(BaseCommand):
     def action(self):
         """ Evaluates this Command by performing its API call. The response object itself, and the json/dict contents
         of the response, are set as instance attributes so we can reference them later. """
-        self.response = requests.post(self.url, headers=self.headers, data=json.dumps(self.body))
+
+        kwargs = {'data': json.dumps(self.body)}
+        if hasattr(self, 'headers'):
+            kwargs['headers'] = self.headers
+
+        self.response = requests.post(self.url, **kwargs)
         super(PostCommand, self).action()
 
 
