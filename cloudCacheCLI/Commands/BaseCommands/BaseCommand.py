@@ -18,7 +18,7 @@ class BaseCommand(object):
         config = self.app.config_manager.load_config()
 
         if CFG_ACCESS_TOKEN in config:
-            self.headers = {'access token': config[CFG_ACCESS_TOKEN]}
+            self.headers = {'access-token': config[CFG_ACCESS_TOKEN]}
 
         self.base_url = 'http://{}:{}'.format(config[CFG_SERVER], config[CFG_PORT])
 
