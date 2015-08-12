@@ -4,6 +4,7 @@ import arrow
 
 from .. import CommandValidationError
 from ..BaseCommands import GetCommand
+from cloudCacheCLI.Utilities import get_table
 
 # ---------------------------------------------------------------------------------------------------------------------
 
