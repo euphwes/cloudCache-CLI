@@ -71,7 +71,7 @@ class ConfigManager(object):
 
         else:
             # Probably because the user configured doesn't exist. Don't bother trying to continue on, just exit
-            print('\n' + response['message'])
+            print('\n' + results['message'])
             sys.exit(0)
 
 
