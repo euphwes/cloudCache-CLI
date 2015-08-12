@@ -35,6 +35,7 @@ class ConfigAppCommand(BaseCommand):
         """ Change port or server in the configuration file. """
         config = self.app.config_manager.load_config()
         config[self.key] = self.val
+        self.app.config_manager.save_config(config)
 
 
     def _change_user(self):
