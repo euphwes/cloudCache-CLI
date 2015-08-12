@@ -27,6 +27,6 @@ class ShowNotebooksCommand(GetCommand):
             print('\n' + get_table([['No notebooks exist for this user']], indent=2))
 
         else:
-            table_headers = ['ID', 'Notebook Name']
-            data = [[nb['id'], nb['name']] for nb in self.results['notebooks']]
+            table_headers = ['ID', 'Notebook Name', '# of Notes']
+            data = [[nb['id'], nb['name'], len(nb['notes'])] for nb in self.results['notebooks']]
             print('\n' + get_table(data, headers=table_headers, indent=2))
