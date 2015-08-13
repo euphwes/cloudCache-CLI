@@ -2,3 +2,4 @@ from .DeleteNotebookCommand import DeleteNotebookCommand
 from .ShowNotebooksCommand import ShowNotebooksCommand
 from .NewNotebookCommand import NewNotebookCommand
 from .ExportNotebooksCommand import ExportNotebooksCommand
+from .ImportNotebooksCommand import ImportNotebooksCommand

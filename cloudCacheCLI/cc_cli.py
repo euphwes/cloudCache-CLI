@@ -9,7 +9,7 @@ from ConfigManager import ConfigManager
 from Commands import CommandValidationError, ConfigAppCommand
 from Commands.UserCommands import NewUserCommand, ShowUsersCommand, DeleteUserCommand
 from Commands.NotebookCommands import DeleteNotebookCommand, NewNotebookCommand, ShowNotebooksCommand,\
-    ExportNotebooksCommand
+    ExportNotebooksCommand, ImportNotebooksCommand
 from Commands.NoteCommands import DeleteNoteCommand, ShowNotesCommand, NewNoteCommand, ShowNoteCommand
 
 # -------------------------------------------------------------------------------------------------
@@ -28,7 +28,8 @@ class CloudCacheCliApp(object):
         'deletenote': DeleteNoteCommand,
         'deletenotebook': DeleteNotebookCommand,
         'deleteuser': DeleteUserCommand,
-        'exportnotebooks': ExportNotebooksCommand
+        'exportnotebooks': ExportNotebooksCommand,
+        'importnotebooks': ImportNotebooksCommand
     }
 
     def __init__(self, args):

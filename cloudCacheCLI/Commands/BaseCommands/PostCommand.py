@@ -25,6 +25,7 @@ class PostCommand(BaseCommand):
             kwargs['headers'] = self.headers
 
         self.response = requests.post(self.url, **kwargs)
+        self.results  = json.loads(self.response.text)
         super(PostCommand, self).action()
 
 
