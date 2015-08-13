@@ -1,8 +1,8 @@
 """ Show the user notebooks. """
 
 from .. import CommandValidationError
-from .NewNotebookCommand import NewNotebookCommand
-from cloudCacheCLI.Utilities import get_table
+from . import NewNotebookCommand
+from ..NoteCommands import NewNoteCommand
 import json
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -32,4 +32,15 @@ class ImportNotebooksCommand(object):
 
         for nb in dict_from_file['notebooks']:
             new_nb_cmd = NewNotebookCommand([nb['name']], self.parent_app)
-            print(new_nb_cmd.results['notebook_id'])
+
+            try:
+                new_nb_id  = new_nb_cmd.results['notebook_id']
+            except KeyError:
+                # KeyError because new_nb_cmd won't have a results attribute if the command failed. If the command
+                # failed, we don't have a new newnotebook, so skip trying to recreate the notes. The failure reason
+                # will be printed by the NewNotebookCommand itself
+                continue
+
+            for note in nb['notes']:
+                new_note_args = [new_nb_id, note['key'], note['value']]
+                new_note_cmd  = NewNoteCommand(new_note_args, self.parent_app)
