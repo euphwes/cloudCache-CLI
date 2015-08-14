@@ -2,13 +2,13 @@
 
 from getpass import getpass
 
-from ..BaseCommands import PostCommand
+from ..BaseCommands import PutCommand
 from .. import CommandValidationError
 from cloudCacheCLI import CFG_USER, CFG_API_KEY, CFG_ACCESS_TOKEN, CFG_TOKEN_EXPIRES
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-class NewUserCommand(PostCommand):
+class NewUserCommand(PutCommand):
 
     def __init__(self, args, parent_app):
         super(NewUserCommand, self).__init__(args, parent_app)

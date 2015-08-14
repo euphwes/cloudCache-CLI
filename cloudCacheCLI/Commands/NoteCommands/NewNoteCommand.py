@@ -1,11 +1,11 @@
 """ Create a new Note in a notebook. """
 
 from .. import CommandValidationError
-from ..BaseCommands import PostCommand
+from ..BaseCommands import PutCommand
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-class NewNoteCommand(PostCommand):
+class NewNoteCommand(PutCommand):
 
     def __init__(self, args, parent_app):
         super(NewNoteCommand, self).__init__(args, parent_app)
