@@ -24,7 +24,7 @@ class PutCommand(BaseCommand):
         if hasattr(self, 'headers'):
             kwargs['headers'] = self.headers
 
-        self.response = requests.post(self.url, **kwargs)
+        self.response = requests.put(self.url, **kwargs)
         self.results  = json.loads(self.response.text)
         super(PutCommand, self).action()
 
