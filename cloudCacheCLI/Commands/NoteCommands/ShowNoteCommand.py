@@ -12,16 +12,18 @@ class ShowNoteCommand(GetCommand):
 
     def __init__(self, args, parent_app):
         super(ShowNoteCommand, self).__init__(args, parent_app)
-        self.url = '{}/notes/{}'.format(self.base_url, self.note_id)
+        self.url = '{}/notebooks/{}/notes/{}'.format(self.base_url, self.notebook_id, self.note_id)
         self.action()
 
 
     def _validate_and_parse_args(self):
-        """ Ensure only 1 argument is passed in, the notebook ID. """
+        """ Ensure 2 arguments are passed in, the notebook ID and note ID. """
 
-        if len(self.args) != 1:
-            raise CommandValidationError('The `note` command takes exactly 1 parameter, the note ID.')
+        if len(self.args) != 2:
+            message = 'The `note` command takes exactly 2 parameters, the notebook ID and the note ID.'
+            raise CommandValidationError(message)
 
+        self.notebook_id = self.args[1]
         self.note_id = self.args[0]
 
 
