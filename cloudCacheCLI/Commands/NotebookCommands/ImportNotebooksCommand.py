@@ -37,10 +37,10 @@ class ImportNotebooksCommand(object):
                 new_nb_id  = new_nb_cmd.results['notebook_id']
             except KeyError:
                 # KeyError because new_nb_cmd won't have a results attribute if the command failed. If the command
-                # failed, we don't have a new newnotebook, so skip trying to recreate the notes. The failure reason
+                # failed, we don't have a new notebook, so skip trying to recreate the notes. The failure reason
                 # will be printed by the NewNotebookCommand itself
                 continue
 
             for note in nb['notes']:
                 new_note_args = [new_nb_id, note['key'], note['value']]
-                new_note_cmd  = NewNoteCommand(new_note_args, self.parent_app)
+                NewNoteCommand(new_note_args, self.parent_app)
